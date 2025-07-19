@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Nunito } from "next/font/google";
+import NavBar from "./components/navbar/NavBar";
 
-const nunito = Nunito({
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Workhub",
@@ -18,7 +15,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${nunito.className} antialiased`}>
+      <body>
+        <NavBar />
         {children}
       </body>
     </html>
