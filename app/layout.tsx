@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "./components/navbar/NavBar";
-
+import Modal from "./components/modals/Modal";
 
 export const metadata: Metadata = {
   title: "Workhub",
@@ -17,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <NavBar />
+        <Modal  isOpen actionLabel="" />
         {children}
       </body>
     </html>
