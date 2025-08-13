@@ -10,10 +10,9 @@ interface ModalProps {
     body?: React.ReactElement;
     footer?: React.ReactElement;
     actionLabel: string;
-    disabled: boolean;
+    disabled?: boolean;
     secondaryAction?: () => void;
-    secondaryLabel?: string;
-
+    secondaryActionLabel?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -26,7 +25,7 @@ const Modal: React.FC<ModalProps> = ({
     actionLabel,
     disabled,
     secondaryAction,
-    secondaryLabel
+    secondaryActionLabel
 }) => {
     const [showModal, setShowModal] = useState(isOpen);
 

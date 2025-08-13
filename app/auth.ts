@@ -1,8 +1,11 @@
 import NextAuth from "next-auth";
+import { getServerSession } from "next-auth";
+import type { NextAuthOptions, Session, User } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -30,23 +33,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     })
   ],
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
   },
   pages: {
     signIn: '/',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user: User }) {
       if (user) {
         token.id = user.id;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
-        session.user.id = token.id as string;
+        // Add id to the session user object with proper type casting
+        (session.user as any).id = token.id as string;
       }
       return session;
     }
   }
-});
+};
+
+export const { auth, signIn, signOut } = NextAuth(authOptions);
+
+export const getSession = () => getServerSession(authOptions);
