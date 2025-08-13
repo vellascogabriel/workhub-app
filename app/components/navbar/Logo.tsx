@@ -1,6 +1,5 @@
 'use client';
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Roboto } from 'next/font/google';
 
@@ -20,7 +19,7 @@ const Logo = () => {
             <div 
                 className={`${roboto.className} text-black text-[25px] flex items-baseline`}
             >
-                Workhub <span className="text-[40px] text-[#006400] leading-none ml-[2px]">.</span>
+                Workhub <span className="text-[40px] text-[#170cab] leading-none ml-[2px]">.</span>
             </div>
         </div>
     );

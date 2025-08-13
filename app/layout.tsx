@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "./components/navbar/NavBar";
-import Modal from "./components/modals/Modal";
+import { AuthModalProvider } from "./context/AuthModalContext";
+import AuthModals from "./components/modals/AuthModals";
+import AuthProvider from "./providers/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Workhub",
@@ -16,9 +18,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <NavBar />
-        <Modal  isOpen actionLabel="" />
-        {children}
+        <AuthProvider>
+          <AuthModalProvider>
+            <NavBar />
+            <AuthModals />
+            {children}
+          </AuthModalProvider>
+        </AuthProvider>
       </body>
     </html>
   );

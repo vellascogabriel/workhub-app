@@ -1,15 +1,27 @@
 'use client';
 
 import { AiOutlineMenu } from 'react-icons/ai';
+import { BiLogOut } from 'react-icons/bi';
 import Avatar from '../avatar/Avatar';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import MenuItem from '../menuitem/MenuItem';
+import { useAuthModal } from '@/app/context/AuthModalContext';
+import { signOut } from 'next-auth/react';
+import { useCurrentUser } from '@/app/hooks/useCurrentUser';
 
 const UserMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const toggleOpen = () => {
+    const { onOpen } = useAuthModal();
+    const currentUser = useCurrentUser();
+    
+    const toggleOpen = useCallback(() => {
         setIsOpen((value) => !value);
-    }
+    }, []);
+    
+    const handleLogout = useCallback(() => {
+        signOut();
+        setIsOpen(false);
+    }, []);
     return (
         <div className="relative flex flex-row">
             <div
@@ -54,7 +66,7 @@ const UserMenu = () => {
                 <div
                     className="
                     absolute
-                    roudend-xl
+                    rounded-xl
                     shadow-md
                     w-[40w]
                     md:w-3/4
@@ -65,10 +77,31 @@ const UserMenu = () => {
                     text-sm"
                 >
                     <div className="flex flex-col cursor-pointer">
-                        <>
-                        <MenuItem label="Login" onClick={() => {}}/>
-                        <MenuItem label="Sign Up" onClick={() => {}}/>
-                        </>
+                        {currentUser ? (
+                            <>
+                                <MenuItem label="Meu perfil" onClick={() => {}} />
+                                <MenuItem label="Meus espaços" onClick={() => {}} />
+                                <MenuItem label="Favoritos" onClick={() => {}} />
+                                <MenuItem label="Reservas" onClick={() => {}} />
+                                <hr className="my-2" />
+                                <MenuItem 
+                                    label="Sair" 
+                                    onClick={handleLogout}
+                                    icon={BiLogOut}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                <MenuItem label="Login" onClick={() => {
+                                    onOpen('login');
+                                    setIsOpen(false);
+                                }}/>
+                                <MenuItem label="Cadastrar" onClick={() => {
+                                    onOpen('register');
+                                    setIsOpen(false);
+                                }}/>
+                            </>
+                        )}
                     </div>
 
                 </div>

@@ -10,10 +10,9 @@ interface ModalProps {
     body?: React.ReactElement;
     footer?: React.ReactElement;
     actionLabel: string;
-    disabled: boolean;
+    disabled?: boolean;
     secondaryAction?: () => void;
-    secondaryLabel?: string;
-
+    secondaryActionLabel?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -26,7 +25,7 @@ const Modal: React.FC<ModalProps> = ({
     actionLabel,
     disabled,
     secondaryAction,
-    secondaryLabel
+    secondaryActionLabel
 }) => {
     const [showModal, setShowModal] = useState(isOpen);
 
@@ -166,9 +165,49 @@ const Modal: React.FC<ModalProps> = ({
                                     flex
                                     flex-col
                                     gap-2
-                                    
                                 "
                             >
+                                <div className="flex flex-row items-center gap-4 w-full">
+                                    {secondaryAction && secondaryActionLabel && (
+                                        <button
+                                            onClick={handleSecondaryAction}
+                                            disabled={disabled}
+                                            className="
+                                                relative
+                                                disabled:opacity-70
+                                                disabled:cursor-not-allowed
+                                                rounded-lg
+                                                hover:opacity-80
+                                                transition
+                                                w-full
+                                                py-2
+                                                border-[1px]
+                                                border-black
+                                                text-black
+                                            "
+                                        >
+                                            {secondaryActionLabel}
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={handleSubmit}
+                                        disabled={disabled}
+                                        className="
+                                            relative
+                                            disabled:opacity-70
+                                            disabled:cursor-not-allowed
+                                            rounded-lg
+                                            hover:opacity-80
+                                            transition
+                                            w-full
+                                            py-2
+                                            bg-black
+                                            text-white
+                                        "
+                                    >
+                                        {actionLabel}
+                                    </button>
+                                </div>
                                 {footer}
                             </div>
                         </div>
