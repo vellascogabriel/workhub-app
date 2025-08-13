@@ -1,14 +1,18 @@
 'use client';
 
+import { IconType } from 'react-icons';
+
 interface MenuItemProps {
     label: string,
     onClick: () => void;
+    icon?: IconType;
 }
 
 
 const MenuItem: React.FC<MenuItemProps> = ({
     label,
-    onClick
+    onClick,
+    icon: Icon
 }) => {
     return(
         <div
@@ -17,9 +21,15 @@ const MenuItem: React.FC<MenuItemProps> = ({
             py-3
             hover:bg-neutral-100
             transition
-            cursor-pointer"
+            cursor-pointer
+            flex
+            flex-row
+            items-center"
             onClick={onClick}
         >
+            {Icon && (
+                <Icon size={20} className="mr-3" />
+            )}
             {label}
         </div>
     )
