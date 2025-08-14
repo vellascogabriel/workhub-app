@@ -1,53 +1,61 @@
-import NextAuth from "next-auth";
+import { AuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "@/app/libs/prismadb";
+import NextAuth from "next-auth";
+import bcrypt from "bcrypt";
 
-const handler = NextAuth({
+export const authOptions: AuthOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
     CredentialsProvider({
-      name: "Credentials",
+      name: 'credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        email: { label: 'email', type: 'text' },
+        password: { label: 'password', type: 'password' },
       },
       async authorize(credentials) {
-        // This is where you would validate the credentials
-        // For now, we'll just return a mock user for demonstration
-        if (credentials?.email === "user@example.com" && credentials?.password === "password") {
-          return {
-            id: "1",
-            name: "Demo User",
-            email: "user@example.com",
-            image: "https://ui-avatars.com/api/?name=Demo+User"
-          };
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Invalid credentials');
         }
-        return null;
+
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email
+          }
+        });
+
+        if (!user || !user?.hashedPassword) {
+          throw new Error('Invalid credentials');
+        }
+
+        const isCorrectPassword = await bcrypt.compare(
+          credentials.password,
+          user.hashedPassword
+        );
+
+        if (!isCorrectPassword) {
+          throw new Error('Invalid credentials');
+        }
+
+        return user;
       }
     })
   ],
   pages: {
     signIn: '/',
   },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        // Add id to the session user object with proper type casting
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (session.user as any).id = token.id as string;
-      }
-      return session;
-    }
-  }
-});
+  debug: process.env.NODE_ENV === 'development',
+  session: {
+    strategy: 'jwt',
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+};
 
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
