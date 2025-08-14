@@ -31,21 +31,43 @@ const RegisterModal = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
-
-    // This would typically make an API call to register the user
-    // For now, we'll just simulate a successful registration
-    setTimeout(() => {
-      setIsLoading(false);
-      onClose();
-      // After registration, we can automatically sign in the user
-      signIn('credentials', {
+    
+    // Make an API call to register the user
+    fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then(data => {
+          throw new Error(data.error || 'Failed to register');
+        });
+      }
+      return response.json();
+    })
+    .then(() => {
+      // After successful registration, sign in the user
+      return signIn('credentials', {
         email: data.email,
         password: data.password,
         redirect: false
-      }).then(() => {
-        router.refresh();
       });
-    }, 1000);
+    })
+    .then(() => {
+      router.refresh();
+      onClose();
+    })
+    .catch((error) => {
+      console.error('Registration error:', error);
+      // You can add error handling UI here
+      alert(error.message);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
   };
 
   const bodyContent = (
