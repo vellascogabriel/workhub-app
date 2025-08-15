@@ -3,25 +3,28 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { FcGoogle } from 'react-icons/fc';
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { RegisterFormData } from '@/app/types';
 import { useRouter } from 'next/navigation';
 
 import { useAuthModal } from '@/app/context/AuthModalContext';
 import Modal from './Modal';
 import Heading from './Heading';
-import Input from './inputs/Input';
+import Input from '@/app/components/inputs/Input';
 import Button from './Button';
+import ErrorMessage from '@/app/components/ui/ErrorMessage';
 
 const RegisterModal = () => {
   const { isOpen, onClose, onToggle, view } = useAuthModal();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>('');
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm<RegisterFormData>({
     defaultValues: {
       name: '',
       email: '',
@@ -29,8 +32,9 @@ const RegisterModal = () => {
     }
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<RegisterFormData> = (data) => {
     setIsLoading(true);
+    setError(''); // Clear any previous errors
     
     // Make an API call to register the user
     fetch('/api/register', {
@@ -40,13 +44,12 @@ const RegisterModal = () => {
       },
       body: JSON.stringify(data)
     })
-    .then((response) => {
-      if (!response.ok) {
-        return response.json().then(data => {
-          throw new Error(data.error || 'Failed to register');
-        });
+    .then((response) => response.json())
+    .then((data) => {
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to register');
       }
-      return response.json();
+      return data.data;
     })
     .then(() => {
       // After successful registration, sign in the user
@@ -62,8 +65,7 @@ const RegisterModal = () => {
     })
     .catch((error) => {
       console.error('Registration error:', error);
-      // You can add error handling UI here
-      alert(error.message);
+      setError(error.message || 'Ocorreu um erro durante o registro');
     })
     .finally(() => {
       setIsLoading(false);
@@ -76,6 +78,7 @@ const RegisterModal = () => {
         title="Bem-vindo ao Workhub"
         subtitle="Crie sua conta!"
       />
+      {error && <ErrorMessage message={error} />}
       <Input
         id="name"
         label="Nome"
