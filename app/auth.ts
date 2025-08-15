@@ -3,8 +3,8 @@
  * This file re-exports from the App Router authentication
  */
 
-// Re-export from App Router auth options
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+// Import from auth options file
+import { authOptions } from "@/app/api/auth/auth-options";
 import { getServerSession } from "next-auth/next";
 
 export const getSession = () => getServerSession(authOptions);

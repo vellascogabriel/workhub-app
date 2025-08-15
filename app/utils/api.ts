@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 /**
  * Standard API response type for consistent response format
  */
-export type ApiResponse<T = any> = {
+export type ApiResponse<T = unknown> = {
   success: boolean;
   data?: T;
   error?: string;

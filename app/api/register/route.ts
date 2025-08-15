@@ -37,7 +37,7 @@ export async function POST(request: Request) {
         });
 
         // Return user without the hashed password
-        const { hashedPassword: _, ...userWithoutPassword } = user;
+        const { hashedPassword: _unused, ...userWithoutPassword } = user;
         
         return createSuccessResponse(userWithoutPassword, 201);
     } catch (error) {

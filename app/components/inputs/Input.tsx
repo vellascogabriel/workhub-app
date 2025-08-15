@@ -1,10 +1,10 @@
 'use client';
 
-import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+import { FieldErrors, FieldValues, Path, UseFormRegister } from "react-hook-form";
 import { BiDollar } from "react-icons/bi";
 
 interface InputProps<T extends FieldValues> {
-  id: string;
+  id: Path<T>;
   label: string;
   type?: string;
   disabled?: boolean;
@@ -40,7 +40,7 @@ const Input = <T extends FieldValues>({
       <input
         id={id}
         disabled={disabled}
-        {...register(id as any, { required })}
+        {...register(id, { required })}
         placeholder=" "
         type={type}
         className={`
