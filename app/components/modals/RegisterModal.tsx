@@ -114,7 +114,16 @@ const RegisterModal = () => {
         outline 
         label="Continuar com Google"
         icon={FcGoogle}
-        onClick={() => signIn('google')}
+        disabled={isLoading}
+        onClick={() => {
+          setIsLoading(true);
+          setError('');
+          signIn('google', { callbackUrl: '/' })
+            .catch(() => {
+              setIsLoading(false);
+              setError('Ocorreu um erro ao conectar com Google');
+            });
+        }}
       />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex flex-row items-center justify-center gap-2">

@@ -4,8 +4,17 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/app/libs/prismadb";
 import bcrypt from "bcrypt";
+import { AuthOptions, SessionStrategy } from "next-auth";
+import { DefaultSession } from "next-auth";
 
-import { SessionStrategy } from "next-auth";
+// Extend the Session type to include user ID
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id?: string;
+    } & DefaultSession["user"]
+  }
+}
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
@@ -56,6 +65,28 @@ export const authOptions = {
     strategy: 'jwt' as SessionStrategy,
   },
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    async jwt({ token, user }) {
+      // Add user id to token if available
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Add user id to session
+      if (session.user && token.id) {
+        session.user.id = token.id;
+      }
+      return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Handle redirects after sign in
+      if (url.startsWith(baseUrl)) return url;
+      // Redirect to home page if external URL
+      return baseUrl;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);
