@@ -59,7 +59,7 @@ const UserMenu = () => {
             >
                 <AiOutlineMenu/>
                 <div className="hidden md:block">
-                    <Avatar />
+                    <Avatar src={currentUser?.image} />
                 </div>
             </div>
             { isOpen && (
