@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import bcrypt from "bcrypt";
+import { createSuccessResponse, createErrorResponse } from "@/app/utils/api";
 
 export async function POST(request: Request) {
     try {
@@ -14,10 +14,7 @@ export async function POST(request: Request) {
 
         // Validate required fields
         if (!email || !name || !password) {
-            return NextResponse.json(
-                { error: 'Missing required fields' },
-                { status: 400 }
-            );
+            return createErrorResponse('Missing required fields', 400);
         }
 
         // Check if user already exists
@@ -26,10 +23,7 @@ export async function POST(request: Request) {
         });
 
         if (existingUser) {
-            return NextResponse.json(
-                { error: 'Email already in use' },
-                { status: 422 }
-            );
+            return createErrorResponse('Email already in use', 422);
         }
 
         const hashedPassword = await bcrypt.hash(password, 12);
@@ -43,13 +37,12 @@ export async function POST(request: Request) {
         });
 
         // Return user without the hashed password
-        const { hashedPassword: _, ...userWithoutPassword } = user;
-        return NextResponse.json(userWithoutPassword);
+        const { hashedPassword: _unused, ...userWithoutPassword } = user;
+        
+        return createSuccessResponse(userWithoutPassword, 201);
     } catch (error) {
         console.error('Registration error:', error);
-        return NextResponse.json(
-            { error: 'An error occurred during registration' },
-            { status: 500 }
-        );
+        
+        return createErrorResponse('An error occurred during registration', 500);
     }
 }
