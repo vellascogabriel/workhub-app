@@ -24,7 +24,9 @@ const MenuItem: React.FC<MenuItemProps> = ({
             cursor-pointer
             flex
             flex-row
-            items-center"
+            items-center
+            text-sm
+            font-medium"
             onClick={onClick}
         >
             {Icon && (

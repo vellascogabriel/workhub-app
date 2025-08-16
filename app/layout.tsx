@@ -21,6 +21,9 @@ export default function RootLayout({
         <AuthProvider>
           <AuthModalProvider>
             <NavBar />
+            <div className="pt-20">
+              {/* Categories moved to page component to prevent hydration errors */}
+            </div>
             <AuthModals />
             {children}
           </AuthModalProvider>

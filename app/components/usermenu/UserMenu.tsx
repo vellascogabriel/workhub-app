@@ -33,7 +33,7 @@ const UserMenu = () => {
                     font-semibold
                     py-3
                     px-4
-                    hover: bg-neutral-100
+                    hover:bg-neutral-100
                     transition
                     cursor-pointer
                 ">
@@ -44,7 +44,7 @@ const UserMenu = () => {
                 className="
                     p-4
                     md:py-1
-                    md: px-2
+                    md:px-2
                     border-[1px]
                     border-neutral-200
                     flex
@@ -54,7 +54,7 @@ const UserMenu = () => {
                     rounded-full
                     transition
                     cursor-pointer
-                    hover: shadow-md          
+                    hover:shadow-md          
                 "
             >
                 <AiOutlineMenu/>
@@ -68,8 +68,8 @@ const UserMenu = () => {
                     absolute
                     rounded-xl
                     shadow-md
-                    w-[40w]
-                    md:w-3/4
+                    w-[240px]
+                    md:w-[280px]
                     bg-white
                     overflow-hidden
                     right-0
