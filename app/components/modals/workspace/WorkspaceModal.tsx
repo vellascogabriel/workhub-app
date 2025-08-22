@@ -1,60 +1,116 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useWorkspaceModal } from '@/app/context/WorkspaceModalContext';
 import Modal from '@/app/components/modals/Modal';
 import CategoryStep from './CategoryStep';
+import LocationStep from './LocationStep';
 
 const WorkspaceModal = () => {
-  const { isOpen, onClose, currentStep, nextStep } = useWorkspaceModal();
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const { 
+    isOpen, 
+    onClose, 
+    currentStep, 
+    nextStep, 
+    prevStep,
+    workspaceData,
+    setCategory,
+    setLocation
+  } = useWorkspaceModal();
   
-  // Will be used for future steps
-  const [workspaceData, setWorkspaceData] = useState({
-    category: '',
-    // Add more fields as needed for future steps
-  });
-
+  // Função para avançar para o próximo passo
   const onSubmit = useCallback(() => {
-    // Save current step data
-    setWorkspaceData(prev => ({
-      ...prev,
-      category: selectedCategory
-    }));
-    
-    // Move to next step or finish the process
-    nextStep();
-    
-    // For now, we'll close the modal after the first step
-    // In the future, this will navigate to the next step
-    onClose();
-  }, [selectedCategory, nextStep, onClose]);
-
-  // Render the current step content
-  const bodyContent = (
-    <CategoryStep
-      selectedCategory={selectedCategory}
-      setSelectedCategory={setSelectedCategory}
-    />
-  );
+    if (currentStep === 0) {
+      nextStep();
+    } else if (currentStep === 1) {
+      // Aqui você pode adicionar mais passos ou finalizar o processo
+      onClose();
+    }
+  }, [currentStep, nextStep, onClose]);
   
-  // Custom button style to match the design in the image
+  // Função para voltar ao passo anterior
+  const onBack = useCallback(() => {
+    if (currentStep === 0) {
+      onClose();
+    } else {
+      prevStep();
+    }
+  }, [currentStep, prevStep, onClose]);
+  
+  // Conteúdo do modal baseado no passo atual
+  const bodyContent = useMemo(() => {
+    if (currentStep === 0) {
+      return (
+        <CategoryStep
+          selectedCategory={workspaceData.category}
+          setSelectedCategory={setCategory}
+        />
+      );
+    }
+    
+    if (currentStep === 1) {
+      return (
+        <LocationStep
+          location={workspaceData.location}
+          setLocation={setLocation}
+        />
+      );
+    }
+    
+    // Retornar um componente vazio em vez de null
+    return <div></div>;
+  }, [currentStep, workspaceData, setCategory, setLocation]);
+  
+  // Verificar se o botão "Next" deve estar desabilitado
+  const isNextDisabled = useMemo(() => {
+    if (currentStep === 0) {
+      return !workspaceData.category;
+    }
+    
+    if (currentStep === 1) {
+      return !workspaceData.location.latlng;
+    }
+    
+    return false;
+  }, [currentStep, workspaceData]);
+  
+  // Rótulo do botão de ação baseado no passo atual
+  const actionLabel = useMemo(() => {
+    if (currentStep === 1) {
+      return 'Next';
+    }
+    
+    return 'Next';
+  }, [currentStep]);
+  
+  // Rótulo do botão secundário baseado no passo atual
+  const secondaryActionLabel = useMemo(() => {
+    if (currentStep === 0) {
+      return undefined;
+    }
+    
+    return 'Back';
+  }, [currentStep]);
+  
+  // Espaçamento adicional no footer
   const footerContent = (
     <div className="mt-4">
-      {/* This div is just for spacing */}
+      {/* Este div é apenas para espaçamento */}
     </div>
   );
-
+  
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={onSubmit}
       title="Workhub your workspace"
-      actionLabel="Next"
+      actionLabel={actionLabel}
       body={bodyContent}
       footer={footerContent}
-      disabled={!selectedCategory}
+      disabled={isNextDisabled}
+      secondaryAction={currentStep === 0 ? undefined : onBack}
+      secondaryActionLabel={secondaryActionLabel}
       customActionButtonStyle="bg-neutral-800 text-white hover:bg-neutral-700"
     />
   );
