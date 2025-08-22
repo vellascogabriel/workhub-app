@@ -36,33 +36,72 @@ const MapLoading = () => (
   </div>
 );
 
-// Componente Map que será renderizado apenas no cliente
-const MapComponent = ({ 
-  center = [51.505, -0.09], 
-  position, 
-  onSelectLocation, 
-  searchQuery 
-}: MapProps) => {
-  // Importar Leaflet e react-leaflet apenas no lado do cliente
-  const L = require('leaflet');
-  const { MapContainer, TileLayer, Marker, useMap, useMapEvents } = require('react-leaflet');
-  
-  // Estado para controlar inicialização do mapa
-  const [mapInitialized, setMapInitialized] = useState(false);
-  
-  // Configurar os ícones do Leaflet
-  useEffect(() => {
-    // Corrigir os ícones do Leaflet no Next.js
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
-    L.Icon.Default.mergeOptions({
-      iconUrl: '/images/marker-icon.png',
-      iconRetinaUrl: '/images/marker-icon-2x.png',
-      shadowUrl: '/images/marker-shadow.png',
-    });
-  }, [L.Icon.Default]);
-  
-  // Função para fazer geocodificação reversa
-  const reverseGeocode = useCallback(async (lat: number, lng: number): Promise<string> => {
+// Tipos para os módulos
+interface LeafletMap {
+  setView: (center: [number, number], zoom: number) => void;
+  _loaded?: boolean;
+}
+
+interface MapContainerProps {
+  center: [number, number];
+  zoom: number;
+  style: Record<string, string | number>;
+  whenReady: () => void;
+  key: string;
+  children: React.ReactNode;
+}
+
+interface TileLayerProps {
+  attribution: string;
+  url: string;
+}
+
+interface MarkerProps {
+  position: [number, number];
+}
+
+// Tipo para o objeto Leaflet
+interface LeafletType {
+  Icon: {
+    Default: {
+      prototype: Record<string, unknown>;
+      mergeOptions: (options: Record<string, string>) => void;
+    };
+  };
+}
+
+interface LeafletModules {
+  L: LeafletType;
+  MapContainer: React.ComponentType<MapContainerProps>;
+  TileLayer: React.ComponentType<TileLayerProps>;
+  Marker: React.ComponentType<MarkerProps>;
+  useMap: () => LeafletMap;
+  useMapEvents: (events: Record<string, (e: { latlng: { lat: number; lng: number } }) => void>) => void;
+}
+
+// Inicialização dos módulos
+const modules: Partial<LeafletModules> = {};
+
+// Carregar módulos apenas no cliente
+if (isBrowser) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    modules.L = require('leaflet');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const reactLeaflet = require('react-leaflet');
+    modules.MapContainer = reactLeaflet.MapContainer;
+    modules.TileLayer = reactLeaflet.TileLayer;
+    modules.Marker = reactLeaflet.Marker;
+    modules.useMap = reactLeaflet.useMap;
+    modules.useMapEvents = reactLeaflet.useMapEvents;
+  } catch (error) {
+    console.error('Error loading Leaflet modules:', error);
+  }
+}
+
+// Hooks reutilizáveis para evitar chamadas condicionais
+const useReverseGeocode = () => {
+  return useCallback(async (lat: number, lng: number): Promise<string> => {
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
@@ -75,39 +114,88 @@ const MapComponent = ({
       return `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
     }
   }, []);
+};
+
+// Componente Map que será renderizado apenas no cliente
+const MapComponent = ({ 
+  center = [51.505, -0.09], 
+  position, 
+  onSelectLocation, 
+  searchQuery 
+}: MapProps) => {
+  // Estado para controlar inicialização do mapa
+  const [mapInitialized, setMapInitialized] = useState(false);
+  const [mapKey] = useState(() => `map-${Date.now()}`);
+  const reverseGeocode = useReverseGeocode();
+  
+  // Hooks sempre chamados incondicionalmente
+  useEffect(() => {
+    // Configurar os ícones do Leaflet
+    if (isBrowser && modules.L && modules.L.Icon) {
+      // Corrigir os ícones do Leaflet no Next.js
+      const prototype = modules.L.Icon.Default.prototype as Record<string, unknown>;
+      // Remover _getIconUrl se existir
+      if ('_getIconUrl' in prototype) {
+        delete prototype._getIconUrl;
+      }
+      modules.L.Icon.Default.mergeOptions({
+        iconUrl: '/images/marker-icon.png',
+        iconRetinaUrl: '/images/marker-icon-2x.png',
+        shadowUrl: '/images/marker-shadow.png',
+      });
+    }
+    
+    // Adicionar um delay para garantir que o DOM está pronto
+    const timer = setTimeout(() => {
+      setMapInitialized(true);
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  // Handler para eventos de clique no mapa
+  const handleMapClick = useCallback(async (e: { latlng: { lat: number; lng: number } }) => {
+    const { lat, lng } = e.latlng;
+    const newPosition: [number, number] = [lat, lng];
+    
+    const address = await reverseGeocode(lat, lng);
+    onSelectLocation(newPosition, address);
+  }, [onSelectLocation, reverseGeocode]);
+  
+  // Verificar se os módulos estão disponíveis
+  if (!isBrowser || !modules.L || !modules.MapContainer) {
+    return <MapLoading />;
+  }
   
   // Componente para atualizar a visualização do mapa
   const MapUpdater = () => {
-    const map = useMap();
+    const map = modules.useMap?.();
     
     useEffect(() => {
-      if (center && mapInitialized) {
-        try {
-          map.setView(center, 13);
-        } catch (error) {
-          console.error('Error setting map view:', error);
-        }
+      if (!map || !map._loaded) return;
+      
+      try {
+        map.setView(center, 13);
+      } catch (error) {
+        console.error('Error setting map view:', error);
       }
-    }, [center, map, mapInitialized]);
+    }, [map]);
     
     return null;
   };
   
   // Componente para buscar localização a partir de uma string
   const GeocoderControl = () => {
-    const map = useMap();
+    const map = modules.useMap?.();
+    const query = searchQuery; // Capturar o valor atual em uma variável local
     
     useEffect(() => {
-      // Verificar se a busca está vazia ou se o mapa não está inicializado
-      if (!searchQuery || !mapInitialized) return;
-      
-      // Verificar se o mapa está pronto para ser usado
-      if (!map || !map._loaded) return;
+      if (!query || !map || !map._loaded) return;
       
       const searchLocation = async () => {
         try {
           const response = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}`
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
           );
           const data = await response.json();
           
@@ -115,7 +203,6 @@ const MapComponent = ({
             const { lat, lon, display_name } = data[0];
             const latlng: [number, number] = [parseFloat(lat), parseFloat(lon)];
             
-            // Verificar novamente se o mapa ainda está disponível antes de usar
             if (map && map._loaded) {
               try {
                 map.setView(latlng, 13);
@@ -130,32 +217,18 @@ const MapComponent = ({
         }
       };
       
-      // Dar mais tempo para o mapa inicializar completamente
       const timer = setTimeout(searchLocation, 1500);
       return () => clearTimeout(timer);
-    }, [searchQuery, map, mapInitialized]);
+    }, [map, query]); // query é uma variável local, não uma prop
     
     return null;
   };
   
   // Componente para lidar com eventos do mapa
   const MapEvents = () => {
-    // Garantir que o mapa está completamente inicializado
-    if (!mapInitialized) return null;
-    
     try {
-      // Usar um ref para evitar chamadas repetidas
-      const eventHandlerRef = useCallback(async (e: { latlng: { lat: number; lng: number } }) => {
-        const { lat, lng } = e.latlng;
-        const newPosition: [number, number] = [lat, lng];
-        
-        const address = await reverseGeocode(lat, lng);
-        onSelectLocation(newPosition, address);
-      }, [reverseGeocode, onSelectLocation]);
-      
-      // Registrar eventos apenas quando o mapa estiver pronto
-      useMapEvents({
-        click: eventHandlerRef
+      modules.useMapEvents?.({
+        click: mapInitialized ? handleMapClick : () => {}
       });
     } catch (error) {
       console.error('Error setting up map events:', error);
@@ -164,43 +237,31 @@ const MapComponent = ({
     return null;
   };
   
-  // Usar key única para forçar recriação completa do mapa quando o centro mudar
-  const mapKey = `map-${center[0]}-${center[1]}-${Date.now()}`;
+  const MapContainer = modules.MapContainer;
+  const TileLayer = modules.TileLayer;
+  const Marker = modules.Marker;
   
-  // Adicionar um delay para garantir que o DOM está pronto
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMapInitialized(true);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, []);
+  if (!MapContainer || !TileLayer || !Marker) {
+    return <MapLoading />;
+  }
   
   return (
-    <div style={mapContainerStyle} className="leaflet-container-wrapper">
+    <div style={{ position: 'relative', height: '100%', width: '100%' }}>
       <MapContainer
+        key={mapKey}
         center={center}
         zoom={13}
-        scrollWheelZoom={false}
         style={mapContainerStyle}
-        key={mapKey}
         whenReady={() => setMapInitialized(true)}
-        attributionControl={false} // Remover controle de atribuição para simplificar
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        
         {position && <Marker position={position} />}
-        
-        {/* Só renderizar componentes internos quando o mapa estiver inicializado */}
-        {mapInitialized && (
-          <>
-            <MapEvents />
-            <MapUpdater />
-            <GeocoderControl />
-          </>
-        )}
+        <MapUpdater />
+        <GeocoderControl />
+        <MapEvents />
       </MapContainer>
     </div>
   );
@@ -218,7 +279,6 @@ const Map: React.FC<MapProps> = (props) => {
     document.querySelectorAll('.leaflet-container').forEach(container => {
       if (container && container.parentNode) {
         try {
-          // Forçar a remoção de quaisquer eventos ou referências
           container.innerHTML = '';
         } catch (e) {
           console.error('Error cleaning up old map containers:', e);
@@ -233,14 +293,12 @@ const Map: React.FC<MapProps> = (props) => {
     return () => {
       if (isBrowser) {
         try {
-          // Tentar limpar quaisquer mapas Leaflet que possam estar na memória
           document.querySelectorAll('.leaflet-container').forEach(container => {
             if (container && container.parentNode) {
               container.innerHTML = '';
             }
           });
           
-          // Limpar quaisquer elementos de estilo do Leaflet que possam ter sido adicionados
           document.querySelectorAll('style[data-leaflet]').forEach(style => {
             if (style && style.parentNode) {
               style.parentNode.removeChild(style);

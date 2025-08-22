@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+// useState não é utilizado neste componente
 import CategoryInput from '@/app/components/inputs/CategoryInput';
 import CategoryIcon from '@/app/components/workspace/CategoryIcon';
 import { categories } from '@/app/components/categories/Categories';
 
 // Função auxiliar para criar um componente de ícone para cada categoria
 const createCategoryIcon = (category: string) => {
-  return (props: { size?: number }) => <CategoryIcon category={category} {...props} />;
+  const IconComponent = (props: { size?: number }) => <CategoryIcon category={category} {...props} />;
+  IconComponent.displayName = `CategoryIcon_${category}`;
+  return IconComponent;
 };
 
 interface CategoryStepProps {
@@ -15,10 +17,8 @@ interface CategoryStepProps {
   setSelectedCategory: (value: string) => void;
 }
 
-const CategoryStep: React.FC<CategoryStepProps> = ({
-  selectedCategory,
-  setSelectedCategory
-}) => {
+// Usar função nomeada em vez de constante para resolver erro de display name
+function CategoryStep({ selectedCategory, setSelectedCategory }: CategoryStepProps) {
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -58,5 +58,8 @@ const CategoryStep: React.FC<CategoryStepProps> = ({
     </div>
   );
 }
+
+// Adicionar displayName para resolver erro de ESLint
+CategoryStep.displayName = 'CategoryStep';
 
 export default CategoryStep;

@@ -37,7 +37,8 @@ export async function POST(request: Request) {
         });
 
         // Return user without the hashed password
-        const { hashedPassword: _unused, ...userWithoutPassword } = user;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { hashedPassword: passwordHash, ...userWithoutPassword } = user;
         
         return createSuccessResponse(userWithoutPassword, 201);
     } catch (error) {
