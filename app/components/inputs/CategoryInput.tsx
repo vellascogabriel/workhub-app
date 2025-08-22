@@ -1,6 +1,6 @@
 'use client';
 
-import { IconType } from "react-icons";
+// Importação removida pois não é utilizada
 
 interface CategoryInputProps {
   label: string;
