@@ -6,12 +6,14 @@ import Avatar from '../avatar/Avatar';
 import { useState, useCallback } from 'react';
 import MenuItem from '../menuitem/MenuItem';
 import { useAuthModal } from '@/app/context/AuthModalContext';
+import { useWorkspaceModal } from '@/app/context/WorkspaceModalContext';
 import { signOut } from 'next-auth/react';
 import { useCurrentUser } from '@/app/hooks/useCurrentUser';
 
 const UserMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { onOpen } = useAuthModal();
+    const { onOpen: openWorkspaceModal } = useWorkspaceModal();
     const currentUser = useCurrentUser();
     
     const toggleOpen = useCallback(() => {
@@ -25,7 +27,7 @@ const UserMenu = () => {
     return (
         <div className="relative flex flex-row">
             <div
-                onClick={() => { }}
+                onClick={openWorkspaceModal}
                 className="
                     hidden
                     md:block

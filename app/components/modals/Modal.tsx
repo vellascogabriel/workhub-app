@@ -13,6 +13,7 @@ interface ModalProps {
     disabled?: boolean;
     secondaryAction?: () => void;
     secondaryActionLabel?: string;
+    customActionButtonStyle?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -25,7 +26,8 @@ const Modal: React.FC<ModalProps> = ({
     actionLabel,
     disabled,
     secondaryAction,
-    secondaryActionLabel
+    secondaryActionLabel,
+    customActionButtonStyle
 }) => {
     const [showModal, setShowModal] = useState(isOpen);
 
@@ -192,7 +194,7 @@ const Modal: React.FC<ModalProps> = ({
                                     <button
                                         onClick={handleSubmit}
                                         disabled={disabled}
-                                        className="
+                                        className={`
                                             relative
                                             disabled:opacity-70
                                             disabled:cursor-not-allowed
@@ -201,9 +203,8 @@ const Modal: React.FC<ModalProps> = ({
                                             transition
                                             w-full
                                             py-2
-                                            bg-black
-                                            text-white
-                                        "
+                                            ${customActionButtonStyle || 'bg-black text-white'}
+                                        `}
                                     >
                                         {actionLabel}
                                     </button>

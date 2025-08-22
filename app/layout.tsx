@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "./components/navbar/NavBar";
 import { AuthModalProvider } from "./context/AuthModalContext";
-import AuthModals from "./components/modals/AuthModals";
+import { WorkspaceModalProvider } from "./context/WorkspaceModalContext";
+import ModalsProvider from "./components/modals/ModalsProvider";
 import AuthProvider from "./providers/AuthProvider";
 
 export const metadata: Metadata = {
@@ -20,12 +21,14 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <AuthModalProvider>
-            <NavBar />
-            <div className="pt-20">
-              {/* Categories moved to page component to prevent hydration errors */}
-            </div>
-            <AuthModals />
-            {children}
+            <WorkspaceModalProvider>
+              <NavBar />
+              <div className="pt-20">
+                {/* Categories moved to page component to prevent hydration errors */}
+              </div>
+              <ModalsProvider />
+              {children}
+            </WorkspaceModalProvider>
           </AuthModalProvider>
         </AuthProvider>
       </body>
