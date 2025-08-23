@@ -28,7 +28,7 @@ export const AuthModalProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   const onToggle = useCallback(() => {
-    setView((currentView) => currentView === 'login' ? 'register' : 'login');
+    setView(currentView => (currentView === 'login' ? 'register' : 'login'));
   }, []);
 
   return (
@@ -40,10 +40,10 @@ export const AuthModalProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
 export const useAuthModal = () => {
   const context = useContext(AuthModalContext);
-  
+
   if (context === undefined) {
     throw new Error('useAuthModal must be used within an AuthModalProvider');
   }
-  
+
   return context;
 };

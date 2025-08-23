@@ -11,7 +11,7 @@ import { useAuthModal } from '@/app/context/AuthModalContext';
 import Modal from './Modal';
 import Heading from './Heading';
 import Input from '@/app/components/inputs/Input';
-import Button from './Button';
+import Button from '@/app/components/ui/buttons/Button';
 import ErrorMessage from '@/app/components/ui/ErrorMessage';
 
 const LoginModal = () => {
@@ -27,42 +27,39 @@ const LoginModal = () => {
   } = useForm<LoginFormData>({
     defaultValues: {
       email: '',
-      password: ''
-    }
+      password: '',
+    },
   });
 
-  const onSubmit: SubmitHandler<LoginFormData> = (data) => {
+  const onSubmit: SubmitHandler<LoginFormData> = data => {
     setIsLoading(true);
     setError(''); // Clear any previous errors
 
     signIn('credentials', {
       ...data,
-      redirect: false
+      redirect: false,
     })
-    .then((callback) => {
-      setIsLoading(false);
+      .then(callback => {
+        setIsLoading(false);
 
-      if (callback?.ok) {
-        router.refresh();
-        onClose();
-      } else if (callback?.error) {
-        // Display error message to user
-        setError(callback.error);
-      }
-    })
-    .catch((error) => {
-      console.error('Login error:', error);
-      setIsLoading(false);
-      setError('Ocorreu um erro durante o login');
-    });
+        if (callback?.ok) {
+          router.refresh();
+          onClose();
+        } else if (callback?.error) {
+          // Display error message to user
+          setError(callback.error);
+        }
+      })
+      .catch(error => {
+        console.error('Login error:', error);
+        setIsLoading(false);
+        setError('Ocorreu um erro durante o login');
+      });
   };
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading
-        title="Bem-vindo de volta"
-        subtitle="Entre na sua conta!"
-      />
+      <Heading title="Bem-vindo de volta" subtitle="Entre na sua conta!" />
       {error && <ErrorMessage message={error} />}
       <Input
         id="email"
@@ -87,30 +84,24 @@ const LoginModal = () => {
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
-      <Button 
-        outline 
+      <Button
+        outline
         label="Continuar com Google"
         icon={FcGoogle}
         disabled={isLoading}
         onClick={() => {
           setIsLoading(true);
           setError('');
-          signIn('google', { callbackUrl: '/' })
-            .catch(() => {
-              setIsLoading(false);
-              setError('Ocorreu um erro ao conectar com Google');
-            });
+          signIn('google', { callbackUrl: '/' }).catch(() => {
+            setIsLoading(false);
+            setError('Ocorreu um erro ao conectar com Google');
+          });
         }}
       />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex flex-row items-center justify-center gap-2">
-          <div>
-            Primeira vez usando o Workhub?
-          </div>
-          <div 
-            onClick={onToggle}
-            className="text-neutral-800 cursor-pointer hover:underline"
-          >
+          <div>Primeira vez usando o Workhub?</div>
+          <div onClick={onToggle} className="text-neutral-800 cursor-pointer hover:underline">
             Criar uma conta
           </div>
         </div>

@@ -11,7 +11,7 @@ import { useAuthModal } from '@/app/context/AuthModalContext';
 import Modal from './Modal';
 import Heading from './Heading';
 import Input from '@/app/components/inputs/Input';
-import Button from './Button';
+import Button from '@/app/components/ui/buttons/Button';
 import ErrorMessage from '@/app/components/ui/ErrorMessage';
 
 const RegisterModal = () => {
@@ -28,56 +28,53 @@ const RegisterModal = () => {
     defaultValues: {
       name: '',
       email: '',
-      password: ''
-    }
+      password: '',
+    },
   });
 
-  const onSubmit: SubmitHandler<RegisterFormData> = (data) => {
+  const onSubmit: SubmitHandler<RegisterFormData> = data => {
     setIsLoading(true);
     setError(''); // Clear any previous errors
-    
+
     // Make an API call to register the user
     fetch('/api/register', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to register');
-      }
-      return data.data;
-    })
-    .then(() => {
-      // After successful registration, sign in the user
-      return signIn('credentials', {
-        email: data.email,
-        password: data.password,
-        redirect: false
+      .then(response => response.json())
+      .then(data => {
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to register');
+        }
+        return data.data;
+      })
+      .then(() => {
+        // After successful registration, sign in the user
+        return signIn('credentials', {
+          email: data.email,
+          password: data.password,
+          redirect: false,
+        });
+      })
+      .then(() => {
+        router.refresh();
+        onClose();
+      })
+      .catch(error => {
+        console.error('Registration error:', error);
+        setError(error.message || 'Ocorreu um erro durante o registro');
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-    })
-    .then(() => {
-      router.refresh();
-      onClose();
-    })
-    .catch((error) => {
-      console.error('Registration error:', error);
-      setError(error.message || 'Ocorreu um erro durante o registro');
-    })
-    .finally(() => {
-      setIsLoading(false);
-    });
   };
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading
-        title="Bem-vindo ao Workhub"
-        subtitle="Crie sua conta!"
-      />
+      <Heading title="Bem-vindo ao Workhub" subtitle="Crie sua conta!" />
       {error && <ErrorMessage message={error} />}
       <Input
         id="name"
@@ -110,30 +107,24 @@ const RegisterModal = () => {
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
-      <Button 
-        outline 
+      <Button
+        outline
         label="Continuar com Google"
         icon={FcGoogle}
         disabled={isLoading}
         onClick={() => {
           setIsLoading(true);
           setError('');
-          signIn('google', { callbackUrl: '/' })
-            .catch(() => {
-              setIsLoading(false);
-              setError('Ocorreu um erro ao conectar com Google');
-            });
+          signIn('google', { callbackUrl: '/' }).catch(() => {
+            setIsLoading(false);
+            setError('Ocorreu um erro ao conectar com Google');
+          });
         }}
       />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex flex-row items-center justify-center gap-2">
-          <div>
-            Já tem uma conta?
-          </div>
-          <div 
-            onClick={onToggle}
-            className="text-neutral-800 cursor-pointer hover:underline"
-          >
+          <div>Já tem uma conta?</div>
+          <div onClick={onToggle} className="text-neutral-800 cursor-pointer hover:underline">
             Entrar
           </div>
         </div>
