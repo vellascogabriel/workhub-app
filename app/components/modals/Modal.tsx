@@ -14,6 +14,7 @@ interface ModalProps {
     secondaryAction?: () => void;
     secondaryActionLabel?: string;
     customActionButtonStyle?: string;
+    isLoading?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -27,7 +28,8 @@ const Modal: React.FC<ModalProps> = ({
     disabled,
     secondaryAction,
     secondaryActionLabel,
-    customActionButtonStyle
+    customActionButtonStyle,
+    isLoading
 }) => {
     const [showModal, setShowModal] = useState(isOpen);
 
@@ -193,7 +195,7 @@ const Modal: React.FC<ModalProps> = ({
                                     )}
                                     <button
                                         onClick={handleSubmit}
-                                        disabled={disabled}
+                                        disabled={disabled || isLoading}
                                         className={`
                                             relative
                                             disabled:opacity-70
@@ -206,7 +208,7 @@ const Modal: React.FC<ModalProps> = ({
                                             ${customActionButtonStyle || 'bg-black text-white'}
                                         `}
                                     >
-                                        {actionLabel}
+                                        {isLoading ? 'Carregando...' : actionLabel}
                                     </button>
                                 </div>
                                 {footer}
