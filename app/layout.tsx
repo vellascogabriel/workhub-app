@@ -11,7 +11,29 @@ import ClientOnly from "./components/ClientOnly";
 
 export const metadata: Metadata = {
   title: "Workhub",
-  description: "Best place to work",
+  description: "Find the perfect coworking space for your needs",
+  openGraph: {
+    title: "Workhub",
+    description: "Find the perfect coworking space for your needs",
+    url: "https://workhub-app.vercel.app",
+    siteName: "Workhub",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/images/workhub-og.png",
+        width: 1200,
+        height: 630,
+        alt: "Workhub - Find the perfect coworking space",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Workhub",
+    description: "Find the perfect coworking space for your needs",
+    images: ["/images/workhub-og.png"],
+  },
 };
 
 export default function RootLayout({
