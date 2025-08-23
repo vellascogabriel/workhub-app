@@ -18,6 +18,7 @@ interface WorkspaceData {
   imageSrc: string;
   title: string;
   description: string;
+  price: number;
 }
 
 interface WorkspaceModalContextProps {
@@ -37,6 +38,7 @@ interface WorkspaceModalContextProps {
   setImageSrc: (imageSrc: string) => void;
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
+  setPrice: (price: number) => void;
 }
 
 const WorkspaceModalContext = createContext<WorkspaceModalContextProps | undefined>(undefined);
@@ -57,7 +59,8 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
     bathroomCount: 1,
     imageSrc: '',
     title: '',
-    description: ''
+    description: '',
+    price: 0
   });
 
   // Métodos para abrir e fechar o modal
@@ -81,7 +84,8 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
       bathroomCount: 1,
       imageSrc: '',
       title: '',
-      description: ''
+      description: '',
+      price: 0
     });
   };
 
@@ -158,6 +162,14 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
       description
     }));
   };
+  
+  // Método para atualizar o preço
+  const setPrice = (price: number) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      price
+    }));
+  };
 
   return (
     <WorkspaceModalContext.Provider
@@ -177,7 +189,8 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
         setBathroomCount,
         setImageSrc,
         setTitle,
-        setDescription
+        setDescription,
+        setPrice
       }}
     >
       {children}

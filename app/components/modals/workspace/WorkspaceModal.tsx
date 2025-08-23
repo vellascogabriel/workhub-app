@@ -8,6 +8,7 @@ import LocationStep from './LocationStep';
 import InfoStep from './InfoStep';
 import ImageStep from './ImageStep';
 import DescriptionStep from './DescriptionStep';
+import PriceStep from './PriceStep';
 
 const WorkspaceModal = () => {
   const { 
@@ -24,7 +25,8 @@ const WorkspaceModal = () => {
     setBathroomCount,
     setImageSrc,
     setTitle,
-    setDescription
+    setDescription,
+    setPrice
   } = useWorkspaceModal();
   
   // Função para avançar para o próximo passo
@@ -38,6 +40,8 @@ const WorkspaceModal = () => {
     } else if (currentStep === 3) {
       nextStep();
     } else if (currentStep === 4) {
+      nextStep();
+    } else if (currentStep === 5) {
       // Aqui você pode adicionar mais passos ou finalizar o processo
       onClose();
     }
@@ -105,9 +109,18 @@ const WorkspaceModal = () => {
       );
     }
     
+    if (currentStep === 5) {
+      return (
+        <PriceStep
+          price={workspaceData.price}
+          setPrice={setPrice}
+        />
+      );
+    }
+    
     // Retornar um componente vazio em vez de null
     return <div></div>;
-  }, [currentStep, workspaceData, setCategory, setLocation, setGuestCount, setRoomCount, setBathroomCount, setImageSrc, setTitle, setDescription]);
+  }, [currentStep, workspaceData, setCategory, setLocation, setGuestCount, setRoomCount, setBathroomCount, setImageSrc, setTitle, setDescription, setPrice]);
   
   // Verificar se o botão "Next" deve estar desabilitado
   const isNextDisabled = useMemo(() => {
@@ -135,12 +148,18 @@ const WorkspaceModal = () => {
       return !workspaceData.title;
     }
     
+    if (currentStep === 5) {
+      // O botão só deve ser habilitado se o preço for maior que zero
+      // Usamos 0.01 como valor mínimo para considerar centavos
+      return workspaceData.price < 0.01;
+    }
+    
     return false;
   }, [currentStep, workspaceData]);
   
   // Rótulo do botão de ação baseado no passo atual
   const actionLabel = useMemo(() => {
-    if (currentStep === 3) {
+    if (currentStep === 5) {
       return 'Create';
     }
     
