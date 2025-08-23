@@ -1,8 +1,28 @@
 import Container from "./components/container/Container";
 import Categories from "./components/categories/Categories";
 import { Suspense } from "react";
+import getListings from "./actions/getListings";
+import getCurrentUser from "./actions/getCurrentUser";
+import ListingCard from "./components/listings/ListingCard";
+import EmptyState from "./components/EmptyState";
 
-export default function Home() {
+// Usando a abordagem mais simples para Next.js 15
+export default async function Home() {
+  // Buscar dados sem filtros iniciais
+  const listings = await getListings({});
+  const currentUser = await getCurrentUser();
+  
+  if (listings.length === 0) {
+    return (
+      <>
+        <Suspense fallback={<div className="h-6"></div>}>
+          <Categories />
+        </Suspense>
+        <EmptyState showReset />
+      </>
+    );
+  }
+
   return (
     <>
       <Suspense fallback={<div className="h-6"></div>}>
@@ -15,7 +35,13 @@ export default function Home() {
             Find the perfect coworking space for your needs
           </p>
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
-            {/* Workspace listings will go here */}
+            {listings.map((listing) => (
+              <ListingCard
+                key={listing.id}
+                data={listing}
+                currentUser={currentUser}
+              />
+            ))}
           </div>
         </div>
       </Container>

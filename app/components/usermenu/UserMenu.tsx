@@ -86,6 +86,16 @@ const UserMenu = () => {
                                 <MenuItem label="Favoritos" onClick={() => {}} />
                                 <MenuItem label="Reservas" onClick={() => {}} />
                                 <hr className="my-2" />
+                                <div className="md:hidden"> {/* Wrapper div com a classe md:hidden */}
+                                    <MenuItem 
+                                        label="Workhub your workspace" 
+                                        onClick={() => {
+                                            openWorkspaceModal();
+                                            setIsOpen(false);
+                                        }}
+                                    />
+                                    <hr className="my-2" />
+                                </div>
                                 <MenuItem 
                                     label="Sair" 
                                     onClick={handleLogout}

@@ -12,7 +12,13 @@ interface LocationType {
 interface WorkspaceData {
   category: string;
   location: LocationType;
-  // Adicione mais campos conforme necessário para passos futuros
+  guestCount: number;
+  roomCount: number;
+  bathroomCount: number;
+  imageSrc: string;
+  title: string;
+  description: string;
+  price: number;
 }
 
 interface WorkspaceModalContextProps {
@@ -26,7 +32,13 @@ interface WorkspaceModalContextProps {
   setStep: (step: number) => void;
   setCategory: (category: string) => void;
   setLocation: (location: LocationType) => void;
-  // Adicione mais setters conforme necessário para passos futuros
+  setGuestCount: (count: number) => void;
+  setRoomCount: (count: number) => void;
+  setBathroomCount: (count: number) => void;
+  setImageSrc: (imageSrc: string) => void;
+  setTitle: (title: string) => void;
+  setDescription: (description: string) => void;
+  setPrice: (price: number) => void;
 }
 
 const WorkspaceModalContext = createContext<WorkspaceModalContextProps | undefined>(undefined);
@@ -41,8 +53,14 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
     location: {
       latlng: null,
       address: ''
-    }
-    // Adicione mais campos conforme necessário
+    },
+    guestCount: 1,
+    roomCount: 1,
+    bathroomCount: 1,
+    imageSrc: '',
+    title: '',
+    description: '',
+    price: 0
   });
 
   // Métodos para abrir e fechar o modal
@@ -60,7 +78,14 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
       location: {
         latlng: null,
         address: ''
-      }
+      },
+      guestCount: 1,
+      roomCount: 1,
+      bathroomCount: 1,
+      imageSrc: '',
+      title: '',
+      description: '',
+      price: 0
     });
   };
 
@@ -91,6 +116,60 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
       location
     }));
   };
+  
+  // Métodos para atualizar os contadores
+  const setGuestCount = (count: number) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      guestCount: count
+    }));
+  };
+  
+  const setRoomCount = (count: number) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      roomCount: count
+    }));
+  };
+  
+  const setBathroomCount = (count: number) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      bathroomCount: count
+    }));
+  };
+  
+  // Método para atualizar a imagem
+  const setImageSrc = (imageSrc: string) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      imageSrc
+    }));
+  };
+  
+  // Método para atualizar o título
+  const setTitle = (title: string) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      title
+    }));
+  };
+  
+  // Método para atualizar a descrição
+  const setDescription = (description: string) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      description
+    }));
+  };
+  
+  // Método para atualizar o preço
+  const setPrice = (price: number) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      price
+    }));
+  };
 
   return (
     <WorkspaceModalContext.Provider
@@ -104,7 +183,14 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
         prevStep,
         setStep,
         setCategory,
-        setLocation
+        setLocation,
+        setGuestCount,
+        setRoomCount,
+        setBathroomCount,
+        setImageSrc,
+        setTitle,
+        setDescription,
+        setPrice
       }}
     >
       {children}
