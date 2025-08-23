@@ -7,6 +7,7 @@ import ModalsProvider from "./components/modals/ModalsProvider";
 import AuthProvider from "./providers/AuthProvider";
 import CloudinaryProvider from "./providers/CloudinaryProvider";
 import { Toaster } from "react-hot-toast";
+import ClientOnly from "./components/ClientOnly";
 
 export const metadata: Metadata = {
   title: "Workhub",
@@ -30,7 +31,9 @@ export default function RootLayout({
                 <div className="pt-20">
                   {/* Categories moved to page component to prevent hydration errors */}
                 </div>
-                <ModalsProvider />
+                <ClientOnly>
+                  <ModalsProvider />
+                </ClientOnly>
                 {children}
               </WorkspaceModalProvider>
             </AuthModalProvider>

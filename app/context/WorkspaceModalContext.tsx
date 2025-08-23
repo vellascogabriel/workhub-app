@@ -16,6 +16,8 @@ interface WorkspaceData {
   roomCount: number;
   bathroomCount: number;
   imageSrc: string;
+  title: string;
+  description: string;
 }
 
 interface WorkspaceModalContextProps {
@@ -33,6 +35,8 @@ interface WorkspaceModalContextProps {
   setRoomCount: (count: number) => void;
   setBathroomCount: (count: number) => void;
   setImageSrc: (imageSrc: string) => void;
+  setTitle: (title: string) => void;
+  setDescription: (description: string) => void;
 }
 
 const WorkspaceModalContext = createContext<WorkspaceModalContextProps | undefined>(undefined);
@@ -51,7 +55,9 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
     guestCount: 1,
     roomCount: 1,
     bathroomCount: 1,
-    imageSrc: ''
+    imageSrc: '',
+    title: '',
+    description: ''
   });
 
   // Métodos para abrir e fechar o modal
@@ -73,7 +79,9 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
       guestCount: 1,
       roomCount: 1,
       bathroomCount: 1,
-      imageSrc: ''
+      imageSrc: '',
+      title: '',
+      description: ''
     });
   };
 
@@ -134,6 +142,22 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
       imageSrc
     }));
   };
+  
+  // Método para atualizar o título
+  const setTitle = (title: string) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      title
+    }));
+  };
+  
+  // Método para atualizar a descrição
+  const setDescription = (description: string) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      description
+    }));
+  };
 
   return (
     <WorkspaceModalContext.Provider
@@ -151,7 +175,9 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
         setGuestCount,
         setRoomCount,
         setBathroomCount,
-        setImageSrc
+        setImageSrc,
+        setTitle,
+        setDescription
       }}
     >
       {children}

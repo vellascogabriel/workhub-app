@@ -7,6 +7,7 @@ import CategoryStep from './CategoryStep';
 import LocationStep from './LocationStep';
 import InfoStep from './InfoStep';
 import ImageStep from './ImageStep';
+import DescriptionStep from './DescriptionStep';
 
 const WorkspaceModal = () => {
   const { 
@@ -21,7 +22,9 @@ const WorkspaceModal = () => {
     setGuestCount,
     setRoomCount,
     setBathroomCount,
-    setImageSrc
+    setImageSrc,
+    setTitle,
+    setDescription
   } = useWorkspaceModal();
   
   // Função para avançar para o próximo passo
@@ -33,6 +36,8 @@ const WorkspaceModal = () => {
     } else if (currentStep === 2) {
       nextStep();
     } else if (currentStep === 3) {
+      nextStep();
+    } else if (currentStep === 4) {
       // Aqui você pode adicionar mais passos ou finalizar o processo
       onClose();
     }
@@ -89,9 +94,20 @@ const WorkspaceModal = () => {
       );
     }
     
+    if (currentStep === 4) {
+      return (
+        <DescriptionStep
+          title={workspaceData.title}
+          description={workspaceData.description}
+          setTitle={setTitle}
+          setDescription={setDescription}
+        />
+      );
+    }
+    
     // Retornar um componente vazio em vez de null
     return <div></div>;
-  }, [currentStep, workspaceData, setCategory, setLocation, setGuestCount, setRoomCount, setBathroomCount, setImageSrc]);
+  }, [currentStep, workspaceData, setCategory, setLocation, setGuestCount, setRoomCount, setBathroomCount, setImageSrc, setTitle, setDescription]);
   
   // Verificar se o botão "Next" deve estar desabilitado
   const isNextDisabled = useMemo(() => {
@@ -111,6 +127,12 @@ const WorkspaceModal = () => {
     if (currentStep === 3) {
       // O botão só deve ser habilitado se uma imagem foi carregada
       return !workspaceData.imageSrc;
+    }
+    
+    if (currentStep === 4) {
+      // O botão só deve ser habilitado se o título foi preenchido
+      // A descrição é opcional
+      return !workspaceData.title;
     }
     
     return false;
