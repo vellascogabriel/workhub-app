@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, ChangeEvent } from 'react';
+import { ChangeEvent } from 'react';
 import Heading from '@/app/components/modals/Heading';
 
 interface DescriptionStepProps {
@@ -14,19 +14,13 @@ const DescriptionStep: React.FC<DescriptionStepProps> = ({
   title,
   description,
   setTitle,
-  setDescription
+  setDescription,
 }) => {
   return (
     <div className="flex flex-col gap-8">
-      <Heading
-        title="Como você descreveria seu espaço?"
-        subtitle="Curto e doce funciona melhor!"
-      />
+      <Heading title="Como você descreveria seu espaço?" subtitle="Curto e doce funciona melhor!" />
       <div className="w-full relative">
-        <label 
-          htmlFor="title" 
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
+        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
           Título
         </label>
         <input
@@ -52,10 +46,7 @@ const DescriptionStep: React.FC<DescriptionStepProps> = ({
         />
       </div>
       <div className="w-full">
-        <label 
-          htmlFor="description" 
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
           Descrição
         </label>
         <textarea

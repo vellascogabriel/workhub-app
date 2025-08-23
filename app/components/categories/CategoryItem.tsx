@@ -1,10 +1,19 @@
 'use client';
 
-import Link from "next/link";
-import { 
-  GiOfficeChair, GiDesk, GiCoffeeCup, GiWifiRouter,
-  GiDoorHandle, GiModernCity, GiPalmTree, GiCaveEntrance,
-  GiBookCover, GiSofa, GiMountains, GiIsland 
+import Link from 'next/link';
+import {
+  GiOfficeChair,
+  GiDesk,
+  GiCoffeeCup,
+  GiWifiRouter,
+  GiDoorHandle,
+  GiModernCity,
+  GiPalmTree,
+  GiCaveEntrance,
+  GiBookCover,
+  GiSofa,
+  GiMountains,
+  GiIsland,
 } from 'react-icons/gi';
 
 // Map of icon names to their components
@@ -20,7 +29,7 @@ const iconMap = {
   GiBookCover,
   GiSofa,
   GiMountains,
-  GiIsland
+  GiIsland,
 };
 
 interface CategoryItemProps {
@@ -29,14 +38,10 @@ interface CategoryItemProps {
   iconName: string;
 }
 
-const CategoryItem: React.FC<CategoryItemProps> = ({ 
-  selected, 
-  label, 
-  iconName
-}) => {
+const CategoryItem: React.FC<CategoryItemProps> = ({ selected, label, iconName }) => {
   // Get the icon component from the map
   const Icon = iconMap[iconName as keyof typeof iconMap];
-  
+
   return (
     <Link
       href={`/?category=${label}`}
@@ -51,8 +56,8 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
         hover:text-neutral-800
         transition
         cursor-pointer
-        ${selected ? "border-b-neutral-800" : "border-transparent"}
-        ${selected ? "text-neutral-800" : "text-neutral-500"}
+        ${selected ? 'border-b-neutral-800' : 'border-transparent'}
+        ${selected ? 'text-neutral-800' : 'text-neutral-500'}
       `}
     >
       <Icon size={26} />

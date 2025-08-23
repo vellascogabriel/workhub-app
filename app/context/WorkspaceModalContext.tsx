@@ -46,13 +46,13 @@ const WorkspaceModalContext = createContext<WorkspaceModalContextProps | undefin
 export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  
+
   // Estado inicial para os dados do workspace
   const [workspaceData, setWorkspaceData] = useState<WorkspaceData>({
     category: '',
     location: {
       latlng: null,
-      address: ''
+      address: '',
     },
     guestCount: 1,
     roomCount: 1,
@@ -60,7 +60,7 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
     imageSrc: '',
     title: '',
     description: '',
-    price: 0
+    price: 0,
   });
 
   // Métodos para abrir e fechar o modal
@@ -77,7 +77,7 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
       category: '',
       location: {
         latlng: null,
-        address: ''
+        address: '',
       },
       guestCount: 1,
       roomCount: 1,
@@ -85,17 +85,17 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
       imageSrc: '',
       title: '',
       description: '',
-      price: 0
+      price: 0,
     });
   };
 
   // Métodos para navegação entre passos
   const nextStep = () => {
-    setCurrentStep((prev) => prev + 1);
+    setCurrentStep(prev => prev + 1);
   };
 
   const prevStep = () => {
-    setCurrentStep((prev) => Math.max(0, prev - 1));
+    setCurrentStep(prev => Math.max(0, prev - 1));
   };
 
   const setStep = (step: number) => {
@@ -106,68 +106,68 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
   const setCategory = (category: string) => {
     setWorkspaceData(prev => ({
       ...prev,
-      category
+      category,
     }));
   };
 
   const setLocation = (location: LocationType) => {
     setWorkspaceData(prev => ({
       ...prev,
-      location
+      location,
     }));
   };
-  
+
   // Métodos para atualizar os contadores
   const setGuestCount = (count: number) => {
     setWorkspaceData(prev => ({
       ...prev,
-      guestCount: count
+      guestCount: count,
     }));
   };
-  
+
   const setRoomCount = (count: number) => {
     setWorkspaceData(prev => ({
       ...prev,
-      roomCount: count
+      roomCount: count,
     }));
   };
-  
+
   const setBathroomCount = (count: number) => {
     setWorkspaceData(prev => ({
       ...prev,
-      bathroomCount: count
+      bathroomCount: count,
     }));
   };
-  
+
   // Método para atualizar a imagem
   const setImageSrc = (imageSrc: string) => {
     setWorkspaceData(prev => ({
       ...prev,
-      imageSrc
+      imageSrc,
     }));
   };
-  
+
   // Método para atualizar o título
   const setTitle = (title: string) => {
     setWorkspaceData(prev => ({
       ...prev,
-      title
+      title,
     }));
   };
-  
+
   // Método para atualizar a descrição
   const setDescription = (description: string) => {
     setWorkspaceData(prev => ({
       ...prev,
-      description
+      description,
     }));
   };
-  
+
   // Método para atualizar o preço
   const setPrice = (price: number) => {
     setWorkspaceData(prev => ({
       ...prev,
-      price
+      price,
     }));
   };
 
@@ -190,7 +190,7 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
         setImageSrc,
         setTitle,
         setDescription,
-        setPrice
+        setPrice,
       }}
     >
       {children}

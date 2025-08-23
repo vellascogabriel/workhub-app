@@ -1,7 +1,7 @@
 'use client';
 
-import { FieldErrors, FieldValues, Path, UseFormRegister } from "react-hook-form";
-import { BiDollar } from "react-icons/bi";
+import { FieldErrors, FieldValues, Path, UseFormRegister } from 'react-hook-form';
+import { BiDollar } from 'react-icons/bi';
 
 interface InputProps<T extends FieldValues> {
   id: Path<T>;
@@ -17,7 +17,7 @@ interface InputProps<T extends FieldValues> {
 const Input = <T extends FieldValues>({
   id,
   label,
-  type = "text",
+  type = 'text',
   disabled,
   formatPrice = false,
   register,
