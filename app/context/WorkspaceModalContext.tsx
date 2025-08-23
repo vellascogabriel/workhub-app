@@ -12,6 +12,9 @@ interface LocationType {
 interface WorkspaceData {
   category: string;
   location: LocationType;
+  guestCount: number;
+  roomCount: number;
+  bathroomCount: number;
   // Adicione mais campos conforme necessário para passos futuros
 }
 
@@ -26,7 +29,9 @@ interface WorkspaceModalContextProps {
   setStep: (step: number) => void;
   setCategory: (category: string) => void;
   setLocation: (location: LocationType) => void;
-  // Adicione mais setters conforme necessário para passos futuros
+  setGuestCount: (count: number) => void;
+  setRoomCount: (count: number) => void;
+  setBathroomCount: (count: number) => void;
 }
 
 const WorkspaceModalContext = createContext<WorkspaceModalContextProps | undefined>(undefined);
@@ -41,8 +46,10 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
     location: {
       latlng: null,
       address: ''
-    }
-    // Adicione mais campos conforme necessário
+    },
+    guestCount: 1,
+    roomCount: 1,
+    bathroomCount: 1
   });
 
   // Métodos para abrir e fechar o modal
@@ -60,7 +67,10 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
       location: {
         latlng: null,
         address: ''
-      }
+      },
+      guestCount: 1,
+      roomCount: 1,
+      bathroomCount: 1
     });
   };
 
@@ -91,6 +101,28 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
       location
     }));
   };
+  
+  // Métodos para atualizar os contadores
+  const setGuestCount = (count: number) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      guestCount: count
+    }));
+  };
+  
+  const setRoomCount = (count: number) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      roomCount: count
+    }));
+  };
+  
+  const setBathroomCount = (count: number) => {
+    setWorkspaceData(prev => ({
+      ...prev,
+      bathroomCount: count
+    }));
+  };
 
   return (
     <WorkspaceModalContext.Provider
@@ -104,7 +136,10 @@ export const WorkspaceModalProvider = ({ children }: { children: React.ReactNode
         prevStep,
         setStep,
         setCategory,
-        setLocation
+        setLocation,
+        setGuestCount,
+        setRoomCount,
+        setBathroomCount
       }}
     >
       {children}

@@ -5,6 +5,7 @@ import { useWorkspaceModal } from '@/app/context/WorkspaceModalContext';
 import Modal from '@/app/components/modals/Modal';
 import CategoryStep from './CategoryStep';
 import LocationStep from './LocationStep';
+import InfoStep from './InfoStep';
 
 const WorkspaceModal = () => {
   const { 
@@ -15,7 +16,10 @@ const WorkspaceModal = () => {
     prevStep,
     workspaceData,
     setCategory,
-    setLocation
+    setLocation,
+    setGuestCount,
+    setRoomCount,
+    setBathroomCount
   } = useWorkspaceModal();
   
   // Função para avançar para o próximo passo
@@ -23,6 +27,8 @@ const WorkspaceModal = () => {
     if (currentStep === 0) {
       nextStep();
     } else if (currentStep === 1) {
+      nextStep();
+    } else if (currentStep === 2) {
       // Aqui você pode adicionar mais passos ou finalizar o processo
       onClose();
     }
@@ -57,9 +63,22 @@ const WorkspaceModal = () => {
       );
     }
     
+    if (currentStep === 2) {
+      return (
+        <InfoStep
+          guestCount={workspaceData.guestCount}
+          roomCount={workspaceData.roomCount}
+          bathroomCount={workspaceData.bathroomCount}
+          setGuestCount={setGuestCount}
+          setRoomCount={setRoomCount}
+          setBathroomCount={setBathroomCount}
+        />
+      );
+    }
+    
     // Retornar um componente vazio em vez de null
     return <div></div>;
-  }, [currentStep, workspaceData, setCategory, setLocation]);
+  }, [currentStep, workspaceData, setCategory, setLocation, setGuestCount, setRoomCount, setBathroomCount]);
   
   // Verificar se o botão "Next" deve estar desabilitado
   const isNextDisabled = useMemo(() => {
@@ -71,13 +90,18 @@ const WorkspaceModal = () => {
       return !workspaceData.location.latlng;
     }
     
+    if (currentStep === 2) {
+      // Todos os campos do passo 3 já têm valores padrão válidos
+      return false;
+    }
+    
     return false;
   }, [currentStep, workspaceData]);
   
   // Rótulo do botão de ação baseado no passo atual
   const actionLabel = useMemo(() => {
-    if (currentStep === 1) {
-      return 'Next';
+    if (currentStep === 2) {
+      return 'Create';
     }
     
     return 'Next';
