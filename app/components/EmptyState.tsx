@@ -1,7 +1,7 @@
 'use client';
 
-import { useRouter } from "next/navigation";
-import Button from "./Button";
+import { useRouter } from 'next/navigation';
+import Button from '@/app/components/ui/buttons/Button';
 
 interface EmptyStateProps {
   title?: string;
@@ -10,14 +10,14 @@ interface EmptyStateProps {
 }
 
 const EmptyState: React.FC<EmptyStateProps> = ({
-  title = "Nenhum resultado encontrado",
-  subtitle = "Tente ajustar ou remover alguns dos seus filtros.",
-  showReset
+  title = 'Nenhum resultado encontrado',
+  subtitle = 'Tente ajustar ou remover alguns dos seus filtros.',
+  showReset,
 }) => {
   const router = useRouter();
 
-  return ( 
-    <div 
+  return (
+    <div
       className="
         h-[60vh]
         flex 
@@ -28,24 +28,16 @@ const EmptyState: React.FC<EmptyStateProps> = ({
       "
     >
       <div className="text-center">
-        <div className="text-2xl font-bold">
-          {title}
-        </div>
-        <div className="font-light text-neutral-500 mt-2">
-          {subtitle}
-        </div>
+        <div className="text-2xl font-bold">{title}</div>
+        <div className="font-light text-neutral-500 mt-2">{subtitle}</div>
       </div>
       <div className="w-48 mt-4">
         {showReset && (
-          <Button
-            outline
-            label="Remover todos os filtros"
-            onClick={() => router.push('/')}
-          />
+          <Button outline label="Remover todos os filtros" onClick={() => router.push('/')} />
         )}
       </div>
     </div>
-   );
-}
- 
+  );
+};
+
 export default EmptyState;
