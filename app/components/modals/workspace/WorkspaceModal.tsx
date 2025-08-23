@@ -1,6 +1,8 @@
 'use client';
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 import { useWorkspaceModal } from '@/app/context/WorkspaceModalContext';
 import Modal from '@/app/components/modals/Modal';
 import CategoryStep from './CategoryStep';
@@ -11,6 +13,8 @@ import DescriptionStep from './DescriptionStep';
 import PriceStep from './PriceStep';
 
 const WorkspaceModal = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  
   const { 
     isOpen, 
     onClose, 
@@ -30,22 +34,38 @@ const WorkspaceModal = () => {
   } = useWorkspaceModal();
   
   // Função para avançar para o próximo passo
-  const onSubmit = useCallback(() => {
-    if (currentStep === 0) {
-      nextStep();
-    } else if (currentStep === 1) {
-      nextStep();
-    } else if (currentStep === 2) {
-      nextStep();
-    } else if (currentStep === 3) {
-      nextStep();
-    } else if (currentStep === 4) {
-      nextStep();
-    } else if (currentStep === 5) {
-      // Aqui você pode adicionar mais passos ou finalizar o processo
-      onClose();
+  const onSubmit = useCallback(async () => {
+    // Se não estiver no último passo, avança para o próximo
+    if (currentStep !== 5) {
+      return nextStep();
     }
-  }, [currentStep, nextStep, onClose]);
+    
+    // Enviar os dados para a API
+    setIsLoading(true);
+    
+    try {
+      // Enviar os dados para a API
+      const response = await axios.post('/api/workspaces', workspaceData);
+      
+      toast.success('Workspace criado com sucesso!');
+      
+      // Redirecionar para a página do workspace criado
+      // window.location.href = `/workspaces/${response.data.data.id}`;
+      
+      // Fecha o modal após a submissão
+      onClose();
+    } catch (error: unknown) {
+      let errorMessage = 'Algo deu errado ao criar o workspace';
+      if (error && typeof error === 'object' && 'response' in error && 
+          error.response && typeof error.response === 'object' && 'data' in error.response && 
+          error.response.data && typeof error.response.data === 'object' && 'error' in error.response.data) {
+        errorMessage = String(error.response.data.error);
+      }
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentStep, nextStep, onClose, workspaceData]);
   
   // Função para voltar ao passo anterior
   const onBack = useCallback(() => {
@@ -191,10 +211,11 @@ const WorkspaceModal = () => {
       actionLabel={actionLabel}
       body={bodyContent}
       footer={footerContent}
-      disabled={isNextDisabled}
+      disabled={isNextDisabled || isLoading}
       secondaryAction={currentStep === 0 ? undefined : onBack}
       secondaryActionLabel={secondaryActionLabel}
       customActionButtonStyle="bg-neutral-800 text-white hover:bg-neutral-700"
+      isLoading={isLoading}
     />
   );
 };

@@ -80,8 +80,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         console.error('URL segura não encontrada na resposta:', data);
         throw new Error('URL da imagem não encontrada na resposta');
       }
-    } catch (error: any) {
-      const errorMessage = error.message || 'Erro desconhecido ao fazer upload';
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao fazer upload';
       console.error('Erro ao fazer upload para o Cloudinary:', error);
       setError(errorMessage);
       toast.error(`Falha no upload: ${errorMessage}`);
