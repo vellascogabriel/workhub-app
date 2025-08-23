@@ -1,8 +1,9 @@
 'use client';
 
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import Image from 'next/image';
+// useRouter comentado pois não está sendo usado no momento
+// import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
 
 // Tipo modificado para compatibilidade com os dados retornados por getCurrentUser
 type SafeUser = {
@@ -15,7 +16,7 @@ type SafeUser = {
   createdAt: string;
   updatedAt: string;
   favoriteIds: string[];
-}
+};
 
 // Tipo modificado para compatibilidade com os dados retornados por getListings
 type SafeListing = {
@@ -36,21 +37,19 @@ type SafeListing = {
   createdAt: string;
   updatedAt: string;
   has24HourAccess: boolean;
-}
+};
 
 // Corrigindo caminho de importação
-import HeartButton from "../HeartButton";
+import HeartButton from '@/app/components/ui/buttons/HeartButton';
 
 interface ListingCardProps {
   data: SafeListing;
   currentUser?: SafeUser | null;
 }
 
-const ListingCard: React.FC<ListingCardProps> = ({
-  data,
-  currentUser,
-}) => {
-  const router = useRouter();
+const ListingCard: React.FC<ListingCardProps> = ({ data, currentUser }) => {
+  // Router temporariamente comentado pois não está sendo usado
+  // const router = useRouter();
 
   // Temporariamente desabilitado o redirecionamento
   const handleClick = useCallback(() => {
@@ -62,7 +61,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
   const formattedPrice = `R$ ${(data.price / 100).toFixed(2).replace('.', ',')}`;
 
   return (
-    <div 
+    <div
       onClick={handleClick}
       className="col-span-1 cursor-pointer group transition duration-200 ease-in-out hover:shadow-lg hover:scale-[1.02] hover:border-[0.5px] hover:border-neutral-300 rounded-xl relative p-1"
     >
@@ -71,7 +70,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
         <div className="absolute top-2 left-2 bg-white px-3 py-1 rounded-full text-xs font-medium text-neutral-800 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-sm z-10">
           Em breve
         </div>
-        <div 
+        <div
           className="
             aspect-square 
             w-full 
@@ -92,32 +91,25 @@ const ListingCard: React.FC<ListingCardProps> = ({
             src={data.imageSrc[0]}
             alt="Listing"
           />
-          <div className="
+          <div
+            className="
             absolute
             top-3
             right-3
-          ">
-            <HeartButton 
-              listingId={data.id}
-              currentUser={currentUser}
-            />
+          "
+          >
+            <HeartButton listingId={data.id} currentUser={currentUser} />
           </div>
         </div>
-        <div className="font-semibold text-lg">
-          {data.title}
-        </div>
-        <div className="font-light text-neutral-500">
-          {data.category}
-        </div>
+        <div className="font-semibold text-lg">{data.title}</div>
+        <div className="font-light text-neutral-500">{data.category}</div>
         <div className="flex flex-row items-center gap-1">
-          <div className="font-semibold">
-            {formattedPrice}
-          </div>
+          <div className="font-semibold">{formattedPrice}</div>
           <div className="font-light">/ dia</div>
         </div>
       </div>
     </div>
   );
-}
- 
+};
+
 export default ListingCard;

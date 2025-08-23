@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import cloudinaryConfig from '@/app/libs/cloudinary-config';
+import cloudinaryConfig from '@/app/libs/cloudinary/cloudinary-config';
 
 interface CloudinaryProviderProps {
   children: React.ReactNode;
@@ -19,15 +19,13 @@ declare global {
 /**
  * Componente que configura o Cloudinary para toda a aplicação
  */
-const CloudinaryProvider: React.FC<CloudinaryProviderProps> = ({ 
-  children 
-}) => {
+const CloudinaryProvider: React.FC<CloudinaryProviderProps> = ({ children }) => {
   // Usar um estado para controlar a montagem no cliente
   const [isMounted, setIsMounted] = useState(false);
-  
+
   useEffect(() => {
     setIsMounted(true);
-    
+
     // Configuração global do Cloudinary
     if (typeof window !== 'undefined') {
       // Inicializar o objeto cloudinary se não existir
