@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
 /**
  * Standard API response type for consistent response format
@@ -17,11 +17,8 @@ export type ApiResponse<T = unknown> = {
  */
 export function createApiResponse<T>(response: ApiResponse<T>): NextResponse {
   const { statusCode, ...responseBody } = response;
-  
-  return NextResponse.json(
-    responseBody,
-    { status: statusCode }
-  );
+
+  return NextResponse.json(responseBody, { status: statusCode });
 }
 
 /**
@@ -34,7 +31,7 @@ export function createSuccessResponse<T>(data: T, statusCode: number = 200): Nex
   return createApiResponse({
     success: true,
     data,
-    statusCode
+    statusCode,
   });
 }
 
@@ -48,6 +45,6 @@ export function createErrorResponse(error: string, statusCode: number = 400): Ne
   return createApiResponse({
     success: false,
     error,
-    statusCode
+    statusCode,
   });
 }

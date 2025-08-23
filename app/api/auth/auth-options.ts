@@ -1,17 +1,17 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from "@/app/libs/prismadb";
-import bcrypt from "bcrypt";
-import { AuthOptions, SessionStrategy } from "next-auth";
-import { DefaultSession } from "next-auth";
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import prisma from '@/app/libs/db/prismadb';
+import bcrypt from 'bcrypt';
+import { AuthOptions, SessionStrategy } from 'next-auth';
+import { DefaultSession } from 'next-auth';
 
 // Extend the Session type to include user ID
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session {
     user: {
       id?: string;
-    } & DefaultSession["user"]
+    } & DefaultSession['user'];
   }
 }
 
@@ -26,7 +26,7 @@ export const authOptions: AuthOptions = {
       name: 'credentials',
       credentials: {
         email: { label: 'email', type: 'text' },
-        password: { label: 'password', type: 'password' }
+        password: { label: 'password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -35,26 +35,23 @@ export const authOptions: AuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: {
-            email: credentials.email
-          }
+            email: credentials.email,
+          },
         });
 
         if (!user || !user?.hashedPassword) {
           throw new Error('Invalid credentials');
         }
 
-        const isCorrectPassword = await bcrypt.compare(
-          credentials.password,
-          user.hashedPassword
-        );
+        const isCorrectPassword = await bcrypt.compare(credentials.password, user.hashedPassword);
 
         if (!isCorrectPassword) {
           throw new Error('Invalid credentials');
         }
 
         return user;
-      }
-    })
+      },
+    }),
   ],
   pages: {
     signIn: '/',

@@ -1,4 +1,4 @@
-import prisma from "@/app/libs/prismadb";
+import prisma from '@/app/libs/db/prismadb';
 
 export interface IListingsParams {
   userId?: string;
@@ -11,20 +11,19 @@ export interface IListingsParams {
   bathroomCount?: number;
 }
 
-export default async function getListings(
-  params: IListingsParams
-) {
+export default async function getListings(params: IListingsParams) {
   try {
     // Garantir que params seja um objeto válido
     const safeParams = params || {};
-    
+
     // Desestruturar com valores padrão para evitar undefined
     const {
       userId,
       category,
       locationValue,
-      startDate,
-      endDate,
+      // startDate e endDate não estão sendo usados ainda
+      // startDate,
+      // endDate,
       guestCount,
       roomCount,
       bathroomCount,
@@ -46,19 +45,19 @@ export default async function getListings(
 
     if (guestCount) {
       query.deskCount = {
-        gte: +guestCount
+        gte: +guestCount,
       };
     }
 
     if (roomCount) {
       query.meetingRoomCount = {
-        gte: +roomCount
+        gte: +roomCount,
       };
     }
 
     if (bathroomCount) {
       query.privateOfficeCount = {
-        gte: +bathroomCount
+        gte: +bathroomCount,
       };
     }
 
@@ -66,12 +65,12 @@ export default async function getListings(
     const listings = await prisma.listing.findMany({
       where: query,
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: 'desc',
+      },
     });
 
     // Formatar os dados para uso no cliente
-    const safeListings = listings.map((listing) => ({
+    const safeListings = listings.map(listing => ({
       ...listing,
       createdAt: listing.createdAt.toISOString(),
       updatedAt: listing.updatedAt.toISOString(),
@@ -79,7 +78,7 @@ export default async function getListings(
 
     return safeListings;
   } catch (error: unknown) {
-    console.error("Error in getListings:", error);
+    console.error('Error in getListings:', error);
     throw new Error(error instanceof Error ? error.message : String(error));
   }
 }

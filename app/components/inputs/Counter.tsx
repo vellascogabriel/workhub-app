@@ -22,7 +22,7 @@ const Counter: React.FC<CounterProps> = ({
   value,
   onChange,
   min = 0,
-  max = 20
+  max = 20,
 }) => {
   // Função para decrementar o valor
   const handleDecrease = useCallback(() => {
@@ -67,9 +67,7 @@ const Counter: React.FC<CounterProps> = ({
         >
           <AiOutlineMinus />
         </button>
-        <div className="font-light text-xl text-neutral-600 w-6 text-center">
-          {value}
-        </div>
+        <div className="font-light text-xl text-neutral-600 w-6 text-center">{value}</div>
         <button
           onClick={handleIncrease}
           disabled={value >= max}

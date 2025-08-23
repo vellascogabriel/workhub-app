@@ -3,20 +3,15 @@
 import { IconType } from 'react-icons';
 
 interface MenuItemProps {
-    label: string,
-    onClick: () => void;
-    icon?: IconType;
+  label: string;
+  onClick: () => void;
+  icon?: IconType;
 }
 
-
-const MenuItem: React.FC<MenuItemProps> = ({
-    label,
-    onClick,
-    icon: Icon
-}) => {
-    return(
-        <div
-            className="
+const MenuItem: React.FC<MenuItemProps> = ({ label, onClick, icon: Icon }) => {
+  return (
+    <div
+      className="
             px-4
             py-3
             hover:bg-neutral-100
@@ -27,14 +22,12 @@ const MenuItem: React.FC<MenuItemProps> = ({
             items-center
             text-sm
             font-medium"
-            onClick={onClick}
-        >
-            {Icon && (
-                <Icon size={20} className="mr-3" />
-            )}
-            {label}
-        </div>
-    )
-}
+      onClick={onClick}
+    >
+      {Icon && <Icon size={20} className="mr-3" />}
+      {label}
+    </div>
+  );
+};
 
 export default MenuItem;

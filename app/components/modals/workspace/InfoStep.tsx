@@ -21,21 +21,17 @@ function InfoStep({
   bathroomCount,
   setGuestCount,
   setRoomCount,
-  setBathroomCount
+  setBathroomCount,
 }: InfoStepProps) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-2xl font-bold">
-          Share some basics about your workspace
-        </h2>
-        <p className="text-neutral-600 mt-2 text-sm">
-          What amenities do you have?
-        </p>
+        <h2 className="text-2xl font-bold">Share some basics about your workspace</h2>
+        <p className="text-neutral-600 mt-2 text-sm">What amenities do you have?</p>
       </div>
-      
+
       <div className="flex flex-col gap-8 max-w-md mx-auto w-full">
-        <Counter 
+        <Counter
           title="Guests"
           subtitle="How many guests do you allow?"
           value={guestCount}
@@ -43,8 +39,8 @@ function InfoStep({
           min={1}
           max={50}
         />
-        
-        <Counter 
+
+        <Counter
           title="Rooms"
           subtitle="How many rooms do you have?"
           value={roomCount}
@@ -52,8 +48,8 @@ function InfoStep({
           min={1}
           max={20}
         />
-        
-        <Counter 
+
+        <Counter
           title="Bathrooms"
           subtitle="How many bathrooms do you have?"
           value={bathroomCount}

@@ -7,7 +7,9 @@ import { categories } from '@/app/components/categories/Categories';
 
 // Função auxiliar para criar um componente de ícone para cada categoria
 const createCategoryIcon = (category: string) => {
-  const IconComponent = (props: { size?: number }) => <CategoryIcon category={category} {...props} />;
+  const IconComponent = (props: { size?: number }) => (
+    <CategoryIcon category={category} {...props} />
+  );
   IconComponent.displayName = `CategoryIcon_${category}`;
   return IconComponent;
 };
@@ -22,15 +24,11 @@ function CategoryStep({ selectedCategory, setSelectedCategory }: CategoryStepPro
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-2xl font-bold">
-          Which of these best describes your workspace?
-        </h2>
-        <p className="text-neutral-600 mt-2 text-sm">
-          Pick a category
-        </p>
+        <h2 className="text-2xl font-bold">Which of these best describes your workspace?</h2>
+        <p className="text-neutral-600 mt-2 text-sm">Pick a category</p>
       </div>
-      
-      <div 
+
+      <div
         className="
           grid 
           grid-cols-1 
@@ -41,7 +39,7 @@ function CategoryStep({ selectedCategory, setSelectedCategory }: CategoryStepPro
           pb-2
         "
       >
-        {categories.map((category) => {
+        {categories.map(category => {
           return (
             <div key={category.label} className="col-span-1">
               <CategoryInput

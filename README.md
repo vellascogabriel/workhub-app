@@ -1,4 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Workhub App
+
+Workhub é uma plataforma para encontrar e reservar espaços de coworking. Este projeto é construído com [Next.js](https://nextjs.org) e utiliza o App Router.
+
+## Estrutura do Projeto
+
+O projeto segue uma estrutura organizada para facilitar a manutenção e escalabilidade:
+
+```
+app/
+├── actions/         # Server actions para busca de dados
+├── api/             # Rotas de API
+├── components/      # Componentes React
+│   ├── layout/      # Componentes de layout (Container, ClientOnly)
+│   ├── listings/    # Componentes relacionados a listagens
+│   ├── map/         # Componentes de mapa
+│   ├── modals/      # Componentes de modal
+│   ├── ui/          # Componentes de UI reutilizáveis
+│   │   ├── buttons/ # Botões (Button, HeartButton)
+│   │   ├── feedback/# Componentes de feedback (EmptyState, ErrorMessage)
+├── hooks/           # Custom hooks
+├── libs/           # Bibliotecas e configurações
+│   ├── api/         # Funções de API
+│   ├── cloudinary/  # Configuração do Cloudinary
+│   ├── db/          # Configuração do Prisma
+├── providers/       # Provedores de contexto
+├── types/           # Definições de tipos TypeScript
+├── utils/           # Funções utilitárias
+```
+
+## Diretrizes de Código
+
+- **TypeScript**: Use tipos explícitos e evite `any`
+- **Componentes**: Prefira componentes funcionais com hooks
+- **Estilização**: Use Tailwind CSS para estilização
+- **Importações**: Organize as importações em grupos (built-in, externos, internos)
+- **Nomeação**: Use PascalCase para componentes e camelCase para funções
 
 ## Getting Started
 

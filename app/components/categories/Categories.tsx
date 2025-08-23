@@ -9,66 +9,64 @@ export const categories = [
   {
     label: 'Private Desk',
     emoji: '🖥️',
-    description: 'Dedicated desk in a shared space'
+    description: 'Dedicated desk in a shared space',
   },
   {
     label: 'Meeting Room',
     emoji: '🚪',
-    description: 'Private room for meetings'
+    description: 'Private room for meetings',
   },
   {
     label: 'Lounge',
     emoji: '🛋️',
-    description: 'Comfortable lounge area'
+    description: 'Comfortable lounge area',
   },
   {
     label: 'Coffee Shop',
     emoji: '☕',
-    description: 'Work from a coffee shop'
+    description: 'Work from a coffee shop',
   },
   {
     label: 'High-Speed',
     emoji: '📶',
-    description: 'High-speed internet'
+    description: 'High-speed internet',
   },
   {
     label: 'Office',
     emoji: '🪑',
-    description: 'Private office space'
+    description: 'Private office space',
   },
   {
     label: 'Urban',
     emoji: '🏙️',
-    description: 'Located in urban area'
+    description: 'Located in urban area',
   },
   {
     label: 'Nature',
     emoji: '🌴',
-    description: 'Close to nature'
+    description: 'Close to nature',
   },
   {
     label: 'Quiet',
     emoji: '🤫',
-    description: 'Quiet environment'
+    description: 'Quiet environment',
   },
   {
     label: 'Library',
     emoji: '📚',
-    description: 'Library-like atmosphere'
+    description: 'Library-like atmosphere',
   },
   {
     label: 'Remote',
     emoji: '🏔️',
-    description: 'Remote location'
+    description: 'Remote location',
   },
   {
     label: 'Retreat',
     emoji: '🏝️',
-    description: 'Retreat-style workspace'
-  }
+    description: 'Retreat-style workspace',
+  },
 ];
-
-
 
 interface CategoryBoxProps {
   label: string;
@@ -76,11 +74,7 @@ interface CategoryBoxProps {
   selected?: boolean;
 }
 
-const CategoryBox: React.FC<CategoryBoxProps> = ({ 
-  label, 
-  emoji,
-  selected 
-}) => {
+const CategoryBox: React.FC<CategoryBoxProps> = ({ label, emoji, selected }) => {
   return (
     <Link
       href={`/?category=${label}`}
@@ -95,8 +89,8 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
         hover:text-neutral-800
         transition
         cursor-pointer
-        ${selected ? "border-b-neutral-800" : "border-transparent"}
-        ${selected ? "text-neutral-800" : "text-neutral-500"}
+        ${selected ? 'border-b-neutral-800' : 'border-transparent'}
+        ${selected ? 'text-neutral-800' : 'text-neutral-500'}
       `}
     >
       <div className="text-2xl">{emoji}</div>
@@ -109,11 +103,11 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
 const Categories = () => {
   const params = useSearchParams();
   const category = params?.get('category');
-  
+
   return (
     <Container>
       <div className="pt-4 flex flex-row items-center justify-between overflow-x-auto pb-2">
-        {categories.map((item) => (
+        {categories.map(item => (
           <CategoryBox
             key={item.label}
             label={item.label}

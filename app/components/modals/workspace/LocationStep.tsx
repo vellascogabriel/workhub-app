@@ -12,10 +12,7 @@ const MapPlaceholder = () => (
 );
 
 // Importação dinâmica do mapa para evitar problemas de SSR
-const Map = dynamic(
-  () => import('@/app/components/Map'),
-  { ssr: false, loading: MapPlaceholder }
-);
+const Map = dynamic(() => import('@/app/components/Map'), { ssr: false, loading: MapPlaceholder });
 
 // Tipos
 interface LocationType {
@@ -47,22 +44,22 @@ const LocationStep: React.FC<LocationStepProps> = ({ location, setLocation }) =>
     setLocation({ latlng: null, address: '' });
   }, [setLocation]);
 
-  const handleLocationSelect = useCallback((latlng: [number, number], address?: string) => {
-    const formattedAddress = address || `Lat: ${latlng[0].toFixed(4)}, Lng: ${latlng[1].toFixed(4)}`;
-    setLocation({ latlng, address: formattedAddress });
-    if (address) setSearchValue(address);
-  }, [setLocation]);
+  const handleLocationSelect = useCallback(
+    (latlng: [number, number], address?: string) => {
+      const formattedAddress =
+        address || `Lat: ${latlng[0].toFixed(4)}, Lng: ${latlng[1].toFixed(4)}`;
+      setLocation({ latlng, address: formattedAddress });
+      if (address) setSearchValue(address);
+    },
+    [setLocation]
+  );
 
   return (
     <div className="flex flex-col gap-6">
       {/* Cabeçalho */}
       <header>
-        <h2 className="text-2xl font-bold">
-          Where is your workspace located?
-        </h2>
-        <p className="text-neutral-600 mt-2 text-sm">
-          Help guests find your workspace
-        </p>
+        <h2 className="text-2xl font-bold">Where is your workspace located?</h2>
+        <p className="text-neutral-600 mt-2 text-sm">Help guests find your workspace</p>
       </header>
 
       {/* Campo de busca */}
@@ -71,12 +68,12 @@ const LocationStep: React.FC<LocationStepProps> = ({ location, setLocation }) =>
           <input
             type="text"
             value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
+            onChange={e => setSearchValue(e.target.value)}
             placeholder="Search for a location..."
             className="w-full p-4 outline-none"
           />
           {searchValue && (
-            <button 
+            <button
               onClick={handleClear}
               className="absolute right-3 p-2 text-gray-500 hover:text-gray-700"
               aria-label="Clear search"
@@ -91,7 +88,7 @@ const LocationStep: React.FC<LocationStepProps> = ({ location, setLocation }) =>
       <div className="mt-4 h-[35vh] relative">
         <ClientOnly>
           {/* Usar key com timestamp para forçar recriação completa do mapa quando necessário */}
-          <Map 
+          <Map
             key={`map-${location.latlng?.[0]}-${location.latlng?.[1]}-${Date.now()}`}
             center={location.latlng || undefined}
             position={location.latlng || undefined}
