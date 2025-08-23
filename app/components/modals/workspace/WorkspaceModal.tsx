@@ -6,6 +6,7 @@ import Modal from '@/app/components/modals/Modal';
 import CategoryStep from './CategoryStep';
 import LocationStep from './LocationStep';
 import InfoStep from './InfoStep';
+import ImageStep from './ImageStep';
 
 const WorkspaceModal = () => {
   const { 
@@ -19,7 +20,8 @@ const WorkspaceModal = () => {
     setLocation,
     setGuestCount,
     setRoomCount,
-    setBathroomCount
+    setBathroomCount,
+    setImageSrc
   } = useWorkspaceModal();
   
   // Função para avançar para o próximo passo
@@ -29,6 +31,8 @@ const WorkspaceModal = () => {
     } else if (currentStep === 1) {
       nextStep();
     } else if (currentStep === 2) {
+      nextStep();
+    } else if (currentStep === 3) {
       // Aqui você pode adicionar mais passos ou finalizar o processo
       onClose();
     }
@@ -76,9 +80,18 @@ const WorkspaceModal = () => {
       );
     }
     
+    if (currentStep === 3) {
+      return (
+        <ImageStep
+          imageSrc={workspaceData.imageSrc}
+          setImageSrc={setImageSrc}
+        />
+      );
+    }
+    
     // Retornar um componente vazio em vez de null
     return <div></div>;
-  }, [currentStep, workspaceData, setCategory, setLocation, setGuestCount, setRoomCount, setBathroomCount]);
+  }, [currentStep, workspaceData, setCategory, setLocation, setGuestCount, setRoomCount, setBathroomCount, setImageSrc]);
   
   // Verificar se o botão "Next" deve estar desabilitado
   const isNextDisabled = useMemo(() => {
@@ -95,12 +108,17 @@ const WorkspaceModal = () => {
       return false;
     }
     
+    if (currentStep === 3) {
+      // O botão só deve ser habilitado se uma imagem foi carregada
+      return !workspaceData.imageSrc;
+    }
+    
     return false;
   }, [currentStep, workspaceData]);
   
   // Rótulo do botão de ação baseado no passo atual
   const actionLabel = useMemo(() => {
-    if (currentStep === 2) {
+    if (currentStep === 3) {
       return 'Create';
     }
     
