@@ -18,6 +18,7 @@ import Container from "@/app/components/container/Container";
 import ListingHead from "@/app/components/listings/ListingHead";
 import ListingInfo from "@/app/components/listings/ListingInfo";
 import ListingReservation from "@/app/components/listings/ListingReservation";
+import ListingMap from "@/app/components/listings/ListingMap";
 import { useRouter } from "next/navigation";
 import { differenceInDays } from 'date-fns';
 import axios from "axios";
@@ -195,6 +196,14 @@ const ListingClient: React.FC<ListingClientProps> = ({
                 disabledDates={disabledDates}
               />
             </div>
+          </div>
+          
+          {/* Mapa da localização */}
+          <div className="mt-10">
+            <ListingMap 
+              address={listing.address}
+              title={listing.title}
+            />
           </div>
         </div>
       </div>
