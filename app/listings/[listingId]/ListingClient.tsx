@@ -25,9 +25,10 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Range } from "react-date-range";
 
+// Empty initial date range to prevent hydration errors
 const initialDateRange = {
-  startDate: new Date(),
-  endDate: new Date(),
+  startDate: undefined,
+  endDate: undefined,
   key: 'selection'
 };
 
@@ -45,6 +46,15 @@ const ListingClient: React.FC<ListingClientProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(listing.price);
   const [dateRange, setDateRange] = useState<Range>(initialDateRange);
+  
+  // Initialize dates on client-side only to prevent hydration errors
+  useEffect(() => {
+    setDateRange({
+      startDate: new Date(),
+      endDate: new Date(),
+      key: 'selection'
+    });
+  }, []);
 
   // Buscar a categoria do workspace
   const category = useMemo(() => {
