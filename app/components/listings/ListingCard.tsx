@@ -1,8 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-// useRouter comentado pois não está sendo usado no momento
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 
 // Tipo modificado para compatibilidade com os dados retornados por getCurrentUser
@@ -48,14 +47,11 @@ interface ListingCardProps {
 }
 
 const ListingCard: React.FC<ListingCardProps> = ({ data, currentUser }) => {
-  // Router temporariamente comentado pois não está sendo usado
-  // const router = useRouter();
+  const router = useRouter();
 
-  // Temporariamente desabilitado o redirecionamento
   const handleClick = useCallback(() => {
-    // Não faz nada por enquanto, apenas para manter o efeito hover
-    // router.push(`/listings/${data.id}`);
-  }, []);
+    router.push(`/listings/${data.id}`);
+  }, [router, data.id]);
 
   // Formatar o preço como moeda brasileira - sem usar useEffect para evitar erro de hidratação
   const formattedPrice = `R$ ${(data.price / 100).toFixed(2).replace('.', ',')}`;

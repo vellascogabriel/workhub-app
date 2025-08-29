@@ -1,6 +1,6 @@
 // NextResponse é usado indiretamente através das funções de API
 import prisma from '@/app/libs/db/prismadb';
-import getCurrentUser from '@/app/actions/getCurrentUser';
+import getCurrentUser from '@/app/libs/actions/getCurrentUser';
 import { createErrorResponse, createSuccessResponse } from '@/app/utils/api';
 
 export async function POST(request: Request) {
