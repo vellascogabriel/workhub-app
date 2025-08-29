@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import prisma from "@/app/libs/db/prismadb";
 import getCurrentUser from "@/app/libs/actions/getCurrentUser";
 import { createSuccessResponse, createErrorResponse } from "@/app/utils/api";

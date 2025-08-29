@@ -3,15 +3,9 @@ import getListingById from "@/app/libs/actions/getListingById";
 import EmptyState from "@/app/components/EmptyState";
 import ListingClient from "./ListingClient";
 
-interface PageParams {
-  listingId: string;
-}
-
-interface PageProps {
-  params: PageParams;
-}
-
-const ListingPage = async ({ params }: PageProps) => {
+// Let Next.js infer PageProps to avoid mismatches with generated types
+const ListingPage = async (props: unknown) => {
+  const { params } = props as { params: { listingId: string } };
   const listing = await getListingById(params);
   const currentUser = await getCurrentUser();
 

@@ -1,10 +1,43 @@
 import prisma from '@/app/libs/db/prismadb';
 
-interface PageParams {
+type Params = {
   listingId: string;
 }
 
-export default async function getListingById(params: PageParams) {
+// Define the SafeListing type for the return value
+type SafeUser = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  emailVerified: string | null;
+  image: string | null;
+  createdAt: string;
+  updatedAt: string;
+  hashedPassword: string | null;
+  favoriteIds: string[];
+}
+
+type SafeListing = {
+  id: string;
+  title: string;
+  description: string;
+  imageSrc: string[] | string;
+  createdAt: string;
+  updatedAt: string;
+  category: string;
+  deskCount: number;
+  meetingRoomCount: number;
+  privateOfficeCount: number;
+  capacity: number;
+  amenities: string[];
+  has24HourAccess: boolean;
+  address: string;
+  price: number;
+  userId: string;
+  user: SafeUser;
+}
+
+export default async function getListingById(params: Params): Promise<SafeListing | null> {
   try {
     const { listingId } = params;
 

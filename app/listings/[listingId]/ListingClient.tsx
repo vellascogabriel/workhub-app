@@ -14,13 +14,12 @@ type SafeUser = {
   favoriteIds: string[];
 };
 
-import { categories } from "@/app/components/categories/Categories";
 import Container from "@/app/components/container/Container";
 import ListingHead from "@/app/components/listings/ListingHead";
 import ListingInfo from "@/app/components/listings/ListingInfo";
 import ListingReservation from "@/app/components/listings/ListingReservation";
 import { useRouter } from "next/navigation";
-import { differenceInDays, eachDayOfInterval } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Range } from "react-date-range";
@@ -32,8 +31,26 @@ const initialDateRange = {
   key: 'selection'
 };
 
+// Minimal listing type used by this client component
+type ListingForClient = {
+  id: string;
+  title: string;
+  imageSrc: string | string[];
+  address: string;
+  user: SafeUser;
+  category: string;
+  description: string;
+  deskCount: number;
+  meetingRoomCount: number;
+  privateOfficeCount: number;
+  capacity: number;
+  amenities: string[];
+  has24HourAccess: boolean;
+  price: number;
+};
+
 interface ListingClientProps {
-  listing: any;
+  listing: ListingForClient;
   currentUser?: SafeUser | null;
 }
 
@@ -56,15 +73,9 @@ const ListingClient: React.FC<ListingClientProps> = ({
     });
   }, []);
 
-  // Buscar a categoria do workspace
-  const category = useMemo(() => {
-    return categories.find((item) => 
-      item.label === listing.category);
-  }, [listing.category]);
-
   // Calcular datas já reservadas
   const disabledDates = useMemo(() => {
-    let dates: Date[] = [];
+    const dates: Date[] = [];
 
     // Aqui você pode adicionar lógica para buscar datas já reservadas
     // Por exemplo, se o listing tiver uma propriedade reservations:
@@ -140,7 +151,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
         <div className="flex flex-col gap-6">
           <ListingHead
             title={listing.title}
-            imageSrc={listing.imageSrc}
+            imageSrc={Array.isArray(listing.imageSrc) ? listing.imageSrc : [listing.imageSrc]}
             locationValue={listing.address}
             id={listing.id}
             currentUser={currentUser}
