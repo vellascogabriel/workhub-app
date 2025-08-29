@@ -3,8 +3,8 @@ export const dynamic = 'force-dynamic';
 import Container from './components/container/Container';
 import Categories from './components/categories/Categories';
 import { Suspense } from 'react';
-import getListings from './actions/getListings';
-import getCurrentUser from './actions/getCurrentUser';
+import getListings from './libs/actions/getListings';
+import getCurrentUser from './libs/actions/getCurrentUser';
 import ListingCard from './components/listings/ListingCard';
 import EmptyState from './components/ui/feedback/EmptyState';
 
