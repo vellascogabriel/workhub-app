@@ -15,10 +15,9 @@ const Map = dynamic(() => import('@/app/components/Map'), {
 
 interface ListingMapProps {
   address: string;
-  title: string;
 }
 
-const ListingMap: React.FC<ListingMapProps> = ({ address, title }) => {
+const ListingMap: React.FC<ListingMapProps> = ({ address }) => {
   const [coordinates, setCoordinates] = useState<[number, number] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);

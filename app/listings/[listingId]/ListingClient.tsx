@@ -202,7 +202,6 @@ const ListingClient: React.FC<ListingClientProps> = ({
           <div className="mt-10">
             <ListingMap 
               address={listing.address}
-              title={listing.title}
             />
           </div>
         </div>

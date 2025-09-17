@@ -12,7 +12,7 @@ export default async function getReservations(
   try {
     const { userId, listingId, authorId } = params;
 
-    const query: any = {};
+    const query: Record<string, unknown> = {};
         
     if (userId) {
       query.userId = userId;
@@ -58,8 +58,8 @@ export default async function getReservations(
     }));
 
     return safeReservations;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching reservations:", error);
-    throw new Error(error);
+    throw new Error(error instanceof Error ? error.message : String(error));
   }
 }

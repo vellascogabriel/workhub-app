@@ -12,6 +12,13 @@ import Container from "@/app/components/container/Container";
 import Heading from "@/app/components/ui/Heading";
 import Button from "@/app/components/ui/buttons/Button";
 
+interface CurrentUser {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
+
 interface ReservationDetailsProps {
   reservation: {
     id: string;
@@ -42,13 +49,12 @@ interface ReservationDetailsProps {
       image: string | null;
     };
   };
-  currentUser: any;
+  currentUser?: CurrentUser;
   isOwner?: boolean;
 }
 
 const ReservationDetails: React.FC<ReservationDetailsProps> = ({
   reservation,
-  currentUser,
   isOwner = false
 }) => {
   const router = useRouter();
@@ -78,7 +84,7 @@ const ReservationDetails: React.FC<ReservationDetailsProps> = ({
       toast.success('Reserva cancelada com sucesso');
       router.push('/trips');
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error('Algo deu errado ao cancelar a reserva');
     } finally {
       setIsLoading(false);
@@ -92,7 +98,7 @@ const ReservationDetails: React.FC<ReservationDetailsProps> = ({
       await axios.patch(`/api/reservations/${reservation.id}`, { status: 'confirmed' });
       toast.success('Reserva confirmada com sucesso');
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error('Algo deu errado ao confirmar a reserva');
     } finally {
       setIsLoading(false);

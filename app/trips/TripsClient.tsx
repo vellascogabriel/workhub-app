@@ -1,22 +1,35 @@
 'use client';
 
-import { useRouter } from "next/navigation";
 import Container from "@/app/components/container/Container";
 import Heading from "@/app/components/ui/Heading";
 import ReservationCard from "@/app/components/reservations/ReservationCard";
 import { useState } from "react";
 
+interface Reservation {
+  id: string;
+  startDate: string;
+  endDate: string;
+  totalPrice: number;
+  bookingType: string;
+  status: string;
+  listing: {
+    id: string;
+    title: string;
+    imageSrc: string[];
+    address: string;
+    price: number;
+  };
+}
+
 interface TripsClientProps {
-  reservations: any[];
-  currentUser?: any;
+  reservations: Reservation[];
+  currentUser?: Record<string, unknown>;
 }
 
 const TripsClient: React.FC<TripsClientProps> = ({
-  reservations,
-  currentUser
+  reservations
 }) => {
-  const router = useRouter();
-  const [deletingId, setDeletingId] = useState('');
+  const [deletingId] = useState('');
 
   return (
     <Container>
@@ -38,12 +51,11 @@ const TripsClient: React.FC<TripsClientProps> = ({
             gap-8
           "
         >
-          {reservations.map((reservation: any) => (
+          {reservations.map((reservation) => (
             <ReservationCard
               key={reservation.id}
               reservation={reservation}
               disabled={deletingId === reservation.id}
-              currentUser={currentUser}
               isOwner={false}
             />
           ))}

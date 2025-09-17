@@ -9,14 +9,42 @@ import Container from "@/app/components/container/Container";
 import Heading from "@/app/components/ui/Heading";
 import ReservationCard from "@/app/components/reservations/ReservationCard";
 
+interface Reservation {
+  id: string;
+  startDate: string;
+  endDate: string;
+  totalPrice: number;
+  bookingType: string;
+  status: string;
+  listing: {
+    id: string;
+    title: string;
+    imageSrc: string[];
+    address: string;
+    price: number;
+  };
+  user: {
+    id: string;
+    name: string | null;
+    email: string | null;
+    image: string | null;
+  };
+}
+
+interface CurrentUser {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
+
 interface ReservationsClientProps {
-  reservations: any[];
-  currentUser?: any;
+  reservations: Reservation[];
+  currentUser?: CurrentUser;
 }
 
 const ReservationsClient: React.FC<ReservationsClientProps> = ({
-  reservations,
-  currentUser
+  reservations
 }) => {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState('');
@@ -28,7 +56,7 @@ const ReservationsClient: React.FC<ReservationsClientProps> = ({
       await axios.delete(`/api/reservations/${id}`);
       toast.success('Reserva cancelada com sucesso');
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error('Algo deu errado');
     } finally {
       setDeletingId('');
@@ -42,7 +70,7 @@ const ReservationsClient: React.FC<ReservationsClientProps> = ({
       await axios.patch(`/api/reservations/${id}`, { status: 'confirmed' });
       toast.success('Reserva confirmada com sucesso');
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error('Algo deu errado');
     } finally {
       setDeletingId('');
@@ -57,12 +85,11 @@ const ReservationsClient: React.FC<ReservationsClientProps> = ({
           subtitle="Gerencie as reservas dos seus espaços de trabalho"
         />
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
-          {reservations.map((reservation: any) => (
+          {reservations.map((reservation) => (
             <div key={reservation.id} className="col-span-1">
               <ReservationCard
                 reservation={reservation}
                 disabled={deletingId === reservation.id}
-                currentUser={currentUser}
                 isOwner={true}
               />
               <div className="mt-2 flex gap-2">

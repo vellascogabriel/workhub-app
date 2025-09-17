@@ -4,15 +4,9 @@ import EmptyState from "@/app/components/EmptyState";
 import ClientOnly from "@/app/components/ClientOnly";
 import ReservationDetails from "@/app/components/reservations/ReservationDetails";
 
-type PageParams = {
-  reservationId: string;
-};
-
-type PageProps = {
-  params: PageParams;
-};
-
-const ReservationManagePage = async ({ params }: PageProps) => {
+// Let Next.js infer PageProps to avoid mismatches with generated types
+const ReservationManagePage = async (props: unknown) => {
+  const { params } = props as { params: { reservationId: string } };
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {

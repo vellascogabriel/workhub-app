@@ -25,21 +25,13 @@ interface ReservationCardProps {
       price: number;
     };
   };
-  onAction?: (id: string) => void;
   disabled?: boolean;
-  actionLabel?: string;
-  actionId?: string;
-  currentUser?: any;
   isOwner?: boolean;
 }
 
 const ReservationCard: React.FC<ReservationCardProps> = ({
   reservation,
-  onAction,
   disabled,
-  actionLabel,
-  actionId = "",
-  currentUser,
   isOwner = false
 }) => {
   const router = useRouter();
@@ -56,7 +48,7 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
         toast.success('Reserva cancelada com sucesso');
         router.refresh();
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error('Algo deu errado');
       });
   }, [disabled, reservation.id, router]);
