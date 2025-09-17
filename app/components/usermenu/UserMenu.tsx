@@ -9,12 +9,14 @@ import { useAuthModal } from '@/app/context/AuthModalContext';
 import { useWorkspaceModal } from '@/app/context/WorkspaceModalContext';
 import { signOut } from 'next-auth/react';
 import { useCurrentUser } from '@/app/hooks/useCurrentUser';
+import { useRouter } from 'next/navigation';
 
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { onOpen } = useAuthModal();
   const { onOpen: openWorkspaceModal } = useWorkspaceModal();
   const currentUser = useCurrentUser();
+  const router = useRouter();
 
   const toggleOpen = useCallback(() => {
     setIsOpen(value => !value);
@@ -83,9 +85,28 @@ const UserMenu = () => {
             {currentUser ? (
               <>
                 <MenuItem label="Meu perfil" onClick={() => {}} />
-                <MenuItem label="Meus espaços" onClick={() => {}} />
+                <MenuItem 
+                  label="Meus espaços" 
+                  onClick={() => {
+                    router.push('/listings');
+                    setIsOpen(false);
+                  }} 
+                />
                 <MenuItem label="Favoritos" onClick={() => {}} />
-                <MenuItem label="Reservas" onClick={() => {}} />
+                <MenuItem 
+                  label="Minhas reservas" 
+                  onClick={() => {
+                    router.push('/trips');
+                    setIsOpen(false);
+                  }} 
+                />
+                <MenuItem 
+                  label="Reservas recebidas" 
+                  onClick={() => {
+                    router.push('/reservations');
+                    setIsOpen(false);
+                  }} 
+                />
                 <hr className="my-2" />
                 <div className="md:hidden">
                   {' '}
